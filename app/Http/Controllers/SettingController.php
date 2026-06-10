@@ -124,39 +124,114 @@ class SettingController extends Controller
     public function generateBackup(Request $request)
     {
         $format = $request->input('format', 'sql');
+        $driver = DB::connection()->getDriverName();
         
         try {
             $tables = [];
-            $results = DB::select("SHOW TABLES");
-            foreach ($results as $result) {
-                $vars = get_object_vars($result);
-                $tableName = reset($vars);
-                // Excluir tablas de sesión y caché para evitar que se cierren las sesiones actuales
-                if (in_array($tableName, ['sessions', 'cache'])) {
-                    continue;
+            if ($driver === 'pgsql') {
+                $results = DB::select("SELECT table_name FROM information_schema.tables WHERE table_schema = 'public' AND table_type = 'BASE TABLE'");
+                foreach ($results as $result) {
+                    $tableName = $result->table_name;
+                    // Excluir tablas de sesión y caché para evitar que se cierren las sesiones actuales
+                    if (in_array($tableName, ['sessions', 'cache'])) {
+                        continue;
+                    }
+                    $tables[] = $tableName;
                 }
-                $tables[] = $tableName;
+            } else {
+                $results = DB::select("SHOW TABLES");
+                foreach ($results as $result) {
+                    $vars = get_object_vars($result);
+                    $tableName = reset($vars);
+                    // Excluir tablas de sesión y caché para evitar que se cierren las sesiones actuales
+                    if (in_array($tableName, ['sessions', 'cache'])) {
+                        continue;
+                    }
+                    $tables[] = $tableName;
+                }
             }
 
             $sqlContent = "-- Vacaciones e Incidencias Database Backup\n";
-            $sqlContent .= "-- Generated at: " . date('Y-m-d H:i:s') . "\n\n";
-            $sqlContent .= "SET FOREIGN_KEY_CHECKS=0;\n\n";
+            $sqlContent .= "-- Generated at: " . date('Y-m-d H:i:s') . "\n";
+            $sqlContent .= "-- Driver: " . $driver . "\n\n";
+
+            if ($driver === 'pgsql') {
+                $sqlContent .= "SET session_replication_role = 'replica';\n\n";
+            } else {
+                $sqlContent .= "SET FOREIGN_KEY_CHECKS=0;\n\n";
+            }
 
             foreach ($tables as $table) {
-                $sqlContent .= "DROP TABLE IF EXISTS `$table`;\n";
-                
-                $createTableObj = DB::select("SHOW CREATE TABLE `$table`")[0];
-                $vars = get_object_vars($createTableObj);
-                $createSql = $vars['Create Table'] ?? reset($vars);
-                $sqlContent .= $createSql . ";\n\n";
+                if ($driver === 'pgsql') {
+                    $sqlContent .= "DROP TABLE IF EXISTS \"$table\" CASCADE;\n";
+                    
+                    // Build CREATE TABLE dynamically for pgsql
+                    $createSql = "CREATE TABLE \"$table\" (\n";
+                    $columns = DB::select("
+                        SELECT column_name, data_type, character_maximum_length, is_nullable, column_default 
+                        FROM information_schema.columns 
+                        WHERE table_schema = 'public' AND table_name = :table
+                        ORDER BY ordinal_position
+                    ", ['table' => $table]);
+                    
+                    $colDefs = [];
+                    foreach ($columns as $col) {
+                        $def = '  "' . $col->column_name . '" ' . $col->data_type;
+                        if ($col->character_maximum_length) {
+                            $def .= '(' . $col->character_maximum_length . ')';
+                        }
+                        if ($col->is_nullable === 'NO') {
+                            $def .= ' NOT NULL';
+                        }
+                        if ($col->column_default !== null) {
+                            $def .= ' DEFAULT ' . $col->column_default;
+                        }
+                        $colDefs[] = $def;
+                    }
+                    
+                    $pkQuery = DB::select("
+                        SELECT kcu.column_name
+                        FROM information_schema.table_constraints tc
+                        JOIN information_schema.key_column_usage kcu
+                          ON tc.constraint_name = kcu.constraint_name
+                          AND tc.table_schema = kcu.table_schema
+                        WHERE tc.constraint_type = 'PRIMARY KEY' 
+                          AND tc.table_name = :table
+                    ", ['table' => $table]);
+                    
+                    if (!empty($pkQuery)) {
+                        $pkCols = [];
+                        foreach ($pkQuery as $pk) {
+                            $pkCols[] = '"' . $pk->column_name . '"';
+                        }
+                        $colDefs[] = '  PRIMARY KEY (' . implode(', ', $pkCols) . ')';
+                    }
+                    
+                    $createSql .= implode(",\n", $colDefs) . "\n);\n\n";
+                    $sqlContent .= $createSql;
+                } else {
+                    $sqlContent .= "DROP TABLE IF EXISTS `$table`;\n";
+                    
+                    $createTableObj = DB::select("SHOW CREATE TABLE `$table`")[0];
+                    $vars = get_object_vars($createTableObj);
+                    $createSql = $vars['Create Table'] ?? reset($vars);
+                    $sqlContent .= $createSql . ";\n\n";
+                }
                 
                 $rows = DB::table($table)->get();
                 foreach ($rows as $row) {
                     $rowArray = (array)$row;
                     $fields = array_keys($rowArray);
-                    $escapedFields = array_map(function($field) {
-                        return "`$field`";
-                    }, $fields);
+                    
+                    if ($driver === 'pgsql') {
+                        $escapedFields = array_map(function($field) {
+                            return "\"$field\"";
+                        }, $fields);
+                    } else {
+                        $escapedFields = array_map(function($field) {
+                            return "`$field`";
+                        }, $fields);
+                    }
                     
                     $escapedValues = array_map(function($val) {
                         if (is_null($val)) {
@@ -165,13 +240,21 @@ class SettingController extends Controller
                         return "'" . addslashes($val) . "'";
                     }, $rowArray);
                     
-                    $sqlContent .= "INSERT INTO `$table` (" . implode(', ', $escapedFields) . ") VALUES (" . implode(', ', $escapedValues) . ");\n";
+                    if ($driver === 'pgsql') {
+                        $sqlContent .= "INSERT INTO \"$table\" (" . implode(', ', $escapedFields) . ") VALUES (" . implode(', ', $escapedValues) . ");\n";
+                    } else {
+                        $sqlContent .= "INSERT INTO `$table` (" . implode(', ', $escapedFields) . ") VALUES (" . implode(', ', $escapedValues) . ");\n";
+                    }
                 }
                 
                 $sqlContent .= "\n";
             }
 
-            $sqlContent .= "SET FOREIGN_KEY_CHECKS=1;\n";
+            if ($driver === 'pgsql') {
+                $sqlContent .= "SET session_replication_role = 'origin';\n";
+            } else {
+                $sqlContent .= "SET FOREIGN_KEY_CHECKS=1;\n";
+            }
 
             $filename = 'respaldo_' . date('Ymd_His');
 
@@ -250,15 +333,21 @@ class SettingController extends Controller
             }
 
             // Excluir operaciones sobre las tablas sessions y cache para mantener al administrador autenticado
-            $sqlContent = preg_replace('/DROP TABLE IF EXISTS `(sessions|cache)`;/i', '-- Excluded drop', $sqlContent);
-            $sqlContent = preg_replace('/CREATE TABLE `(sessions|cache)`.*?;/is', '-- Excluded create', $sqlContent);
-            $sqlContent = preg_replace('/INSERT INTO `(sessions|cache)`.*?;/i', '-- Excluded insert', $sqlContent);
+            $sqlContent = preg_replace('/DROP TABLE IF EXISTS [`"]?(sessions|cache)[`"]?( CASCADE)?;/i', '-- Excluded drop', $sqlContent);
+            $sqlContent = preg_replace('/CREATE TABLE [`"]?(sessions|cache)[`"]?.*?;/is', '-- Excluded create', $sqlContent);
+            $sqlContent = preg_replace('/INSERT INTO [`"]?(sessions|cache)[`"]?.*?;/i', '-- Excluded insert', $sqlContent);
 
             // Validar que corresponda al sistema con tablas clave
             $requiredTables = ['users', 'settings', 'empleados', 'vacaciones', 'saldo_vacaciones', 'movimientos_vacaciones', 'incidencias'];
             $matchCount = 0;
             foreach ($requiredTables as $table) {
-                if (stripos($sqlContent, "CREATE TABLE `$table`") !== false || stripos($sqlContent, "INSERT INTO `$table`") !== false || stripos($sqlContent, "DROP TABLE IF EXISTS `$table`") !== false) {
+                if (stripos($sqlContent, "CREATE TABLE `$table`") !== false 
+                    || stripos($sqlContent, "CREATE TABLE \"$table\"") !== false
+                    || stripos($sqlContent, "INSERT INTO `$table`") !== false 
+                    || stripos($sqlContent, "INSERT INTO \"$table\"") !== false
+                    || stripos($sqlContent, "DROP TABLE IF EXISTS `$table`") !== false
+                    || stripos($sqlContent, "DROP TABLE IF EXISTS \"$table\"") !== false
+                ) {
                     $matchCount++;
                 }
             }
@@ -268,9 +357,34 @@ class SettingController extends Controller
             }
 
             // Ejecutar la restauración
-            DB::unprepared('SET FOREIGN_KEY_CHECKS=0;');
-            DB::unprepared($sqlContent);
-            DB::unprepared('SET FOREIGN_KEY_CHECKS=1;');
+            $driver = DB::connection()->getDriverName();
+            if ($driver === 'pgsql') {
+                DB::unprepared("SET session_replication_role = 'replica';");
+                DB::unprepared($sqlContent);
+                DB::unprepared("SET session_replication_role = 'origin';");
+                
+                // Sincronizar secuencias para Postgres
+                foreach ($requiredTables as $table) {
+                    try {
+                        $hasId = DB::select("
+                            SELECT column_name 
+                            FROM information_schema.columns 
+                            WHERE table_schema = 'public' 
+                              AND table_name = :table 
+                              AND column_name = 'id'
+                        ", ['table' => $table]);
+                        if (!empty($hasId)) {
+                            DB::select("SELECT setval(pg_get_serial_sequence('$table', 'id'), coalesce(max(id), 1)) FROM \"$table\"");
+                        }
+                    } catch (\Exception $e) {
+                        // Ignorar errores de secuencias no autoincrementales
+                    }
+                }
+            } else {
+                DB::unprepared('SET FOREIGN_KEY_CHECKS=0;');
+                DB::unprepared($sqlContent);
+                DB::unprepared('SET FOREIGN_KEY_CHECKS=1;');
+            }
 
             // Sincronizar todos los saldos de vacaciones para garantizar coherencia en el Dashboard
             if (class_exists('App\Models\SaldoVacacion')) {
