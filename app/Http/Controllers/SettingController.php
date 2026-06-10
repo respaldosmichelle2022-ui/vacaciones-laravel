@@ -176,15 +176,30 @@ class SettingController extends Controller
                     
                     $colDefs = [];
                     foreach ($columns as $col) {
-                        $def = '  "' . $col->column_name . '" ' . $col->data_type;
-                        if ($col->character_maximum_length) {
+                        $type = $col->data_type;
+                        $default = $col->column_default;
+                        
+                        // Si el valor por defecto usa una secuencia nextval, lo convertimos a tipo serial/bigserial/smallserial
+                        if ($default !== null && preg_match('/nextval\(/i', $default)) {
+                            if (stripos($type, 'bigint') !== false) {
+                                $type = 'bigserial';
+                            } elseif (stripos($type, 'smallint') !== false) {
+                                $type = 'smallserial';
+                            } else {
+                                $type = 'serial';
+                            }
+                            $default = null; // No necesita DEFAULT nextval(...)
+                        }
+                        
+                        $def = '  "' . $col->column_name . '" ' . $type;
+                        if ($col->character_maximum_length && !preg_match('/serial/i', $type)) {
                             $def .= '(' . $col->character_maximum_length . ')';
                         }
-                        if ($col->is_nullable === 'NO') {
+                        if ($col->is_nullable === 'NO' && !preg_match('/serial/i', $type)) {
                             $def .= ' NOT NULL';
                         }
-                        if ($col->column_default !== null) {
-                            $def .= ' DEFAULT ' . $col->column_default;
+                        if ($default !== null) {
+                            $def .= ' DEFAULT ' . $default;
                         }
                         $colDefs[] = $def;
                     }
@@ -336,6 +351,24 @@ class SettingController extends Controller
             $sqlContent = preg_replace('/DROP TABLE IF EXISTS [`"]?(sessions|cache)[`"]?( CASCADE)?;/i', '-- Excluded drop', $sqlContent);
             $sqlContent = preg_replace('/CREATE TABLE [`"]?(sessions|cache)[`"]?.*?;/is', '-- Excluded create', $sqlContent);
             $sqlContent = preg_replace('/INSERT INTO [`"]?(sessions|cache)[`"]?.*?;/i', '-- Excluded insert', $sqlContent);
+
+            // Convertir definiciones de nextval/secuencias a serial/bigserial para evitar errores de relación no existente
+            $sqlContent = preg_replace_callback(
+                '/"([^"]+)"\s+(integer|bigint|smallint)\s+NOT\s+NULL\s+DEFAULT\s+nextval\(\'([^\']+)\'::regclass\)/i',
+                function($matches) {
+                    $colName = $matches[1];
+                    $type = strtolower($matches[2]);
+                    if ($type === 'bigint') {
+                        $newType = 'bigserial';
+                    } elseif ($type === 'smallint') {
+                        $newType = 'smallserial';
+                    } else {
+                        $newType = 'serial';
+                    }
+                    return "\"$colName\" $newType";
+                },
+                $sqlContent
+            );
 
             // Validar que corresponda al sistema con tablas clave
             $requiredTables = ['users', 'settings', 'empleados', 'vacaciones', 'saldo_vacaciones', 'movimientos_vacaciones', 'incidencias'];
