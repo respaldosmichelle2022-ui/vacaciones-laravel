@@ -54,15 +54,13 @@ class SettingController extends Controller
 
         if ($request->hasFile('logo')) {
             $image = $request->file('logo');
-            $name = 'logo_' . time() . '.' . $image->getClientOriginalExtension();
-            $destinationPath = public_path('/uploads/logos');
-            if (!file_exists($destinationPath)) {
-                mkdir($destinationPath, 0777, true);
-            }
-            $image->move($destinationPath, $name);
             
-            $path = '/uploads/logos/' . $name;
-            Setting::setVal('logo_path', $path);
+            // Convertir la imagen a Base64 para guardarla de forma persistente en Supabase
+            $imageData = base64_encode(file_get_contents($image->getRealPath()));
+            $mimeType = $image->getMimeType();
+            $base64 = 'data:' . $mimeType . ';base64,' . $imageData;
+            
+            Setting::setVal('logo_path', $base64);
 
             return back()->with('success', 'Logo corporativo subido correctamente.');
         }
@@ -111,22 +109,13 @@ class SettingController extends Controller
 
         if ($request->hasFile('login_image')) {
             $image = $request->file('login_image');
-            $name = 'login_bg_' . time() . '.' . $image->getClientOriginalExtension();
-            $destinationPath = public_path('/uploads/login');
-            if (!file_exists($destinationPath)) {
-                mkdir($destinationPath, 0777, true);
-            }
-            $image->move($destinationPath, $name);
             
-            $path = '/uploads/login/' . $name;
-            
-            // Delete old image if exists
-            $oldPath = Setting::getVal('login_image_path');
-            if ($oldPath && file_exists(public_path($oldPath))) {
-                @unlink(public_path($oldPath));
-            }
+            // Convertir la imagen a Base64 para guardarla de forma persistente en Supabase
+            $imageData = base64_encode(file_get_contents($image->getRealPath()));
+            $mimeType = $image->getMimeType();
+            $base64 = 'data:' . $mimeType . ';base64,' . $imageData;
 
-            Setting::setVal('login_image_path', $path);
+            Setting::setVal('login_image_path', $base64);
 
             return back()->with('success', 'Imagen de inicio de sesión subida correctamente.');
         }
@@ -136,11 +125,6 @@ class SettingController extends Controller
 
     public function eliminarImagenLogin()
     {
-        $oldPath = Setting::getVal('login_image_path');
-        if ($oldPath && file_exists(public_path($oldPath))) {
-            @unlink(public_path($oldPath));
-        }
-
         Setting::setVal('login_image_path', null);
 
         return back()->with('success', 'Imagen de inicio de sesión eliminada correctamente.');
