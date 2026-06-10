@@ -43,9 +43,26 @@ class EmpleadoController extends Controller
 
     public function guardar(Request $request)
     {
+        $request->validate([
+            'numero_empleado' => 'required',
+            'nombre' => 'required|string|max:255',
+            'apellido_paterno' => 'required|string|max:255',
+            'fecha_ingreso' => 'required|date',
+        ]);
 
-        Empleado::create([
+        // Verificar duplicado por número de empleado, nombre y apellido paterno
+        $existe = Empleado::where('numero_empleado', $request->numero_empleado)
+            ->where('nombre', $request->nombre)
+            ->where('apellido_paterno', $request->apellido_paterno)
+            ->exists();
 
+        if ($existe) {
+            return back()->withInput()->withErrors([
+                'numero_empleado' => 'Ya existe un colaborador registrado con este número de empleado, nombre y apellido paterno.'
+            ]);
+        }
+
+        $empleado = Empleado::create([
             'numero_empleado' => $request->numero_empleado,
             'nombre' => $request->nombre,
             'apellido_paterno' => $request->apellido_paterno,
@@ -55,11 +72,12 @@ class EmpleadoController extends Controller
             'sitio' => $request->sitio,
             'sucursal' => $request->sucursal,
             'puesto' => $request->puesto,
-
         ]);
 
-        return redirect('/empleados');
+        // Sincronizar saldos al guardar
+        SaldoVacacion::sincronizarSaldos($empleado->id);
 
+        return redirect('/empleados')->with('success', 'Empleado registrado correctamente.');
     }
 
     public function importar(Request $request)
@@ -290,25 +308,46 @@ class EmpleadoController extends Controller
     }
 
     public function actualizar(Request $request, $id)
-{
-    $empleado = Empleado::findOrFail($id);
+    {
+        $empleado = Empleado::findOrFail($id);
 
-    $empleado->update([
+        $request->validate([
+            'numero_empleado' => 'required',
+            'nombre' => 'required|string|max:255',
+            'apellido_paterno' => 'required|string|max:255',
+            'fecha_ingreso' => 'required|date',
+        ]);
 
-        'numero_empleado' => $request->numero_empleado,
-        'nombre' => $request->nombre,
-        'apellido_paterno' => $request->apellido_paterno,
-        'apellido_materno' => $request->apellido_materno,
-        'sitio' => $request->sitio,
-        'sucursal' => $request->sucursal,
-        'puesto' => $request->puesto,
-        'fecha_ingreso' => $request->fecha_ingreso,
-        'fecha_nacimiento' => $request->fecha_nacimiento,
+        // Verificar duplicado excluyendo al empleado actual
+        $existe = Empleado::where('id', '!=', $id)
+            ->where('numero_empleado', $request->numero_empleado)
+            ->where('nombre', $request->nombre)
+            ->where('apellido_paterno', $request->apellido_paterno)
+            ->exists();
 
-    ]);
+        if ($existe) {
+            return back()->withInput()->withErrors([
+                'numero_empleado' => 'Ya existe otro colaborador registrado con este número de empleado, nombre y apellido paterno.'
+            ]);
+        }
 
-    return redirect('/empleados');
-}
+        $empleado->update([
+            'numero_empleado' => $request->numero_empleado,
+            'nombre' => $request->nombre,
+            'apellido_paterno' => $request->apellido_paterno,
+            'apellido_materno' => $request->apellido_materno,
+            'sitio' => $request->sitio,
+            'sucursal' => $request->sucursal,
+            'puesto' => $request->puesto,
+            'fecha_ingreso' => $request->fecha_ingreso,
+            'fecha_nacimiento' => $request->fecha_nacimiento,
+        ]);
+
+        // Sincronizar saldos por si cambió la fecha de ingreso
+        SaldoVacacion::sincronizarSaldos($id);
+
+        return redirect('/empleados')->with('success', 'Datos del empleado actualizados correctamente.');
+    }
 
     public function cambiarEstado($id)
     {
