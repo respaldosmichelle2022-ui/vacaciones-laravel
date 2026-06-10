@@ -205,11 +205,12 @@ class SettingController extends Controller
                     }
                     
                     $pkQuery = DB::select("
-                        SELECT kcu.column_name
+                        SELECT DISTINCT kcu.column_name
                         FROM information_schema.table_constraints tc
                         JOIN information_schema.key_column_usage kcu
                           ON tc.constraint_name = kcu.constraint_name
                           AND tc.table_schema = kcu.table_schema
+                          AND tc.table_name = kcu.table_name
                         WHERE tc.constraint_type = 'PRIMARY KEY' 
                           AND tc.table_name = :table
                     ", ['table' => $table]);
@@ -366,6 +367,23 @@ class SettingController extends Controller
                         $newType = 'serial';
                     }
                     return "\"$colName\" $newType";
+                },
+                $sqlContent
+            );
+
+            // Corregir PRIMARY KEY duplicados como ("id", "id") a ("id")
+            $sqlContent = preg_replace_callback(
+                '/PRIMARY KEY\s*\(([^)]+)\)/i',
+                function($matches) {
+                    $cols = explode(',', $matches[1]);
+                    $cols = array_map(function($c) {
+                        return trim($c, " \t\n\r\0\x0B`\"");
+                    }, $cols);
+                    $uniqueCols = array_unique($cols);
+                    $escapedCols = array_map(function($c) {
+                        return "\"$c\"";
+                    }, $uniqueCols);
+                    return 'PRIMARY KEY (' . implode(', ', $escapedCols) . ')';
                 },
                 $sqlContent
             );
