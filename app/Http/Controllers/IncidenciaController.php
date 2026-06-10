@@ -45,7 +45,7 @@ class IncidenciaController extends Controller
     public function crear()
     {
         $sitio = auth()->user()->sitio;
-        $query = Empleado::orderByRaw('CAST(numero_empleado AS UNSIGNED)');
+        $query = Empleado::orderByRaw('CAST(numero_empleado AS DECIMAL)');
         if ($sitio) {
             $query->where('sitio', $sitio);
         }
@@ -71,7 +71,7 @@ class IncidenciaController extends Controller
     {
         $incidencia = Incidencia::findOrFail($id);
         $sitio = auth()->user()->sitio;
-        $query = Empleado::orderByRaw('CAST(numero_empleado AS UNSIGNED)');
+        $query = Empleado::orderByRaw('CAST(numero_empleado AS DECIMAL)');
         if ($sitio) {
             $query->where('sitio', $sitio);
         }

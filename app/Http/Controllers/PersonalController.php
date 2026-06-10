@@ -34,7 +34,7 @@ class PersonalController extends Controller
 
         // Cargar todos los empleados del sitio
         $empleados = Empleado::where('sitio', $sitio)
-            ->orderByRaw('CAST(numero_empleado AS UNSIGNED)')
+            ->orderByRaw('CAST(numero_empleado AS DECIMAL)')
             ->get();
 
         // Cargar datos del empleado seleccionado (opcional)

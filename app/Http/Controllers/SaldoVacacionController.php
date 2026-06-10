@@ -28,7 +28,7 @@ class SaldoVacacionController extends Controller
     public function crear()
     {
         $sitio = auth()->user()->sitio;
-        $query = Empleado::orderByRaw('CAST(numero_empleado AS UNSIGNED)');
+        $query = Empleado::orderByRaw('CAST(numero_empleado AS DECIMAL)');
         if ($sitio) {
             $query->where('sitio', $sitio);
         }
@@ -72,7 +72,7 @@ if($existe)
         $saldo = SaldoVacacion::findOrFail($id);
 
         $sitio = auth()->user()->sitio;
-        $query = Empleado::orderByRaw('CAST(numero_empleado AS UNSIGNED)');
+        $query = Empleado::orderByRaw('CAST(numero_empleado AS DECIMAL)');
         if ($sitio) {
             $query->where('sitio', $sitio);
         }

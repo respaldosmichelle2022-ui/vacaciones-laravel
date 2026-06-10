@@ -29,7 +29,7 @@ class EmpleadoController extends Controller
             });
         }
 
-        $empleados = $query->orderByRaw('CAST(numero_empleado AS UNSIGNED)')->get();
+        $empleados = $query->orderByRaw('CAST(numero_empleado AS DECIMAL)')->get();
 
         return view('empleados.index', compact('empleados'));
     }
@@ -364,7 +364,7 @@ class EmpleadoController extends Controller
         if ($sitio) {
             $query->where('sitio', $sitio);
         }
-        $empleados = $query->orderByRaw('CAST(numero_empleado AS UNSIGNED)')->get();
+        $empleados = $query->orderByRaw('CAST(numero_empleado AS DECIMAL)')->get();
 
         $filename = "reporte_empleados_" . date('Ymd_His') . ".csv";
         $headers = [

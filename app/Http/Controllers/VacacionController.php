@@ -18,7 +18,7 @@ class VacacionController extends Controller
 
     public function crear()
     {
-        $empleados = Empleado::orderByRaw('CAST(numero_empleado AS UNSIGNED)')->get();
+        $empleados = Empleado::orderByRaw('CAST(numero_empleado AS DECIMAL)')->get();
 
         return view('vacaciones.crear', compact('empleados'));
     }
@@ -48,7 +48,7 @@ class VacacionController extends Controller
 
         $vacacion = Vacacion::findOrFail($id);
 
-        $empleados = Empleado::orderByRaw('CAST(numero_empleado AS UNSIGNED)')->get();
+        $empleados = Empleado::orderByRaw('CAST(numero_empleado AS DECIMAL)')->get();
 
         return view('vacaciones.editar', compact('vacacion', 'empleados'));
 
