@@ -26,6 +26,10 @@ RUN apk add --no-cache \
 # Instalar extensiones de PHP (incluyendo pdo_pgsql para Supabase)
 RUN docker-php-ext-install pdo_mysql pdo_pgsql mbstring exif pcntl bcmath gd zip
 
+# Configurar límites de subida de archivos en PHP
+RUN echo "upload_max_filesize = 20M" > /usr/local/etc/php/conf.d/uploads.ini \
+    && echo "post_max_size = 20M" >> /usr/local/etc/php/conf.d/uploads.ini
+
 # Copiar Composer desde la imagen oficial
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
@@ -41,9 +45,9 @@ COPY --from=node-builder /app/public/build ./public/build
 # Instalar dependencias de Composer para producción
 RUN composer install --no-interaction --optimize-autoloader --no-dev
 
-# Ajustar permisos para las carpetas de almacenamiento y caché de Laravel
-RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache \
-    && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
+# Ajustar permisos para las carpetas de almacenamiento, caché de Laravel y subidas
+RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache /var/www/html/public/uploads \
+    && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache /var/www/html/public/uploads
 
 # Copiar configuraciones de Nginx y Supervisor
 COPY docker/nginx.conf /etc/nginx/nginx.conf
