@@ -6,23 +6,27 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::table('empleados', function (Blueprint $table) {
-            $table->dropUnique('numero_empleado');
+            // Validar que la columna exista antes de intentar eliminar el índice
+            if (Schema::hasColumn('empleados', 'numero_empleado')) {
+                try {
+                    $table->dropUnique(['numero_empleado']);
+                } catch (\Exception $e) {
+                    // Ignorar el error si el índice no existe
+                }
+            }
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::table('empleados', function (Blueprint $table) {
-            $table->unique(['numero_empleado', 'sitio'], 'numero_empleado');
+            // Restaurar el índice único si la columna existe
+            if (Schema::hasColumn('empleados', 'numero_empleado')) {
+                $table->unique('numero_empleado');
+            }
         });
     }
 };
