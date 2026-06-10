@@ -9,29 +9,11 @@ use Illuminate\Support\Facades\DB;
 
 class SettingController extends Controller
 {
-    public function __construct()
+    private function checkAdmin()
     {
-        $this->middleware(function ($request, $next) {
-            $user = auth()->user();
-            $action = $request->route()->getActionMethod();
-            
-            $adminOnlyMethods = [
-                'guardarLogo',
-                'guardarPosicion',
-                'guardarTitulo',
-                'guardarImagenLogin',
-                'eliminarImagenLogin',
-                'diaFestivosIndex',
-                'diaFestivosStore',
-                'diaFestivosDelete'
-            ];
-            
-            if (in_array($action, $adminOnlyMethods) && !$user->esAdmin()) {
-                abort(403, 'Acceso denegado. Solo administradores pueden realizar esta acción.');
-            }
-            
-            return $next($request);
-        });
+        if (!auth()->user() || !auth()->user()->esAdmin()) {
+            abort(403, 'Acceso denegado. Solo administradores pueden realizar esta acción.');
+        }
     }
 
     public function index()
@@ -48,6 +30,7 @@ class SettingController extends Controller
 
     public function guardarLogo(Request $request)
     {
+        $this->checkAdmin();
         $request->validate([
             'logo' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
@@ -70,6 +53,7 @@ class SettingController extends Controller
 
     public function guardarPosicion(Request $request)
     {
+        $this->checkAdmin();
         $request->validate([
             'logo_position' => 'required|string',
         ]);
@@ -92,6 +76,7 @@ class SettingController extends Controller
 
     public function guardarTitulo(Request $request)
     {
+        $this->checkAdmin();
         $request->validate([
             'system_title' => 'required|string|max:100',
         ]);
@@ -103,6 +88,7 @@ class SettingController extends Controller
 
     public function guardarImagenLogin(Request $request)
     {
+        $this->checkAdmin();
         $request->validate([
             'login_image' => 'required|image|mimes:jpeg,png,jpg',
         ]);
@@ -125,6 +111,7 @@ class SettingController extends Controller
 
     public function eliminarImagenLogin()
     {
+        $this->checkAdmin();
         Setting::setVal('login_image_path', null);
 
         return back()->with('success', 'Imagen de inicio de sesión eliminada correctamente.');
@@ -474,6 +461,7 @@ class SettingController extends Controller
 
     public function diaFestivosIndex(Request $request)
     {
+        $this->checkAdmin();
         $festivos = DiaFestivo::orderBy('fecha', 'asc')->get();
         
         // Determinar año y mes actual para el calendario
@@ -485,6 +473,7 @@ class SettingController extends Controller
 
     public function diaFestivosStore(Request $request)
     {
+        $this->checkAdmin();
         $request->validate([
             'fecha' => 'required|date',
             'nombre' => 'required|string|max:100',
@@ -508,6 +497,7 @@ class SettingController extends Controller
 
     public function diaFestivosDelete($id)
     {
+        $this->checkAdmin();
         $festivo = DiaFestivo::findOrFail($id);
         $festivo->delete();
 

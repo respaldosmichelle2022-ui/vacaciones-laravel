@@ -10,7 +10,7 @@ class AuthController extends Controller
     public function showLogin()
     {
         if (Auth::check()) {
-            return Auth::user()->esAdmin() ? redirect('/') : redirect('/mi-sitio');
+            return (Auth::user()->esAdmin() || Auth::user()->esSupervisor()) ? redirect('/') : redirect('/mi-sitio');
         }
         return view('auth.login');
     }
@@ -25,7 +25,7 @@ class AuthController extends Controller
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
 
-            if (Auth::user()->esAdmin()) {
+            if (Auth::user()->esAdmin() || Auth::user()->esSupervisor()) {
                 return redirect()->intended('/');
             } else {
                 return redirect()->intended('/mi-sitio');
