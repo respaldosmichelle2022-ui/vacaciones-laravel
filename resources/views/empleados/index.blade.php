@@ -466,6 +466,7 @@
                 document.getElementById('modalNombreEmpleado').textContent = data.nombre_completo;
                 document.getElementById('modalFechaIngreso').textContent = data.fecha_ingreso;
                 document.getElementById('modalFechaNacimiento').textContent = data.fecha_nacimiento || 'No registrada';
+                document.getElementById('modalAnosCumplidos').textContent = `${data.anos_cumplidos} AÑOS`;
 
                 let html = '';
                 if (data.saldos && data.saldos.length > 0) {
@@ -552,6 +553,9 @@
                 </div>
                 <div style="font-size: 13px; color: #64748b; display: flex; align-items: center; gap: 6px; font-weight: 500; margin-top: 8px;">
                     <span>🎂</span> Fecha de Nacimiento: <strong id="modalFechaNacimiento" style="color: #1e293b; font-weight: 600;"></strong>
+                </div>
+                <div style="font-size: 13px; color: #64748b; display: flex; align-items: center; gap: 6px; font-weight: 500; margin-top: 8px;">
+                    <span>🏅</span> Años cumplidos: <strong id="modalAnosCumplidos" style="color: #2563eb; font-weight: 700;"></strong>
                 </div>
             </div>
 
