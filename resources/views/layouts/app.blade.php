@@ -908,7 +908,7 @@
                             <span>Dashboard</span>
                         </a>
                         
-                        @if(!$user->esAdmin())
+                        @if(!$user->esAdmin() && !$user->esSupervisor())
                             <a href="/mi-sitio" class="{{ Request::is('mi-sitio*') ? 'active' : '' }}">
                                 <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
                                     <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
@@ -1006,7 +1006,7 @@
                     </div>
                 </div>
 
-                @if($user->esAdmin())
+                @if($user->esAdmin() || $user->esSupervisor())
                     <!-- Administración (Colapsable) -->
                     <div class="menu-category-wrapper" id="cat-admin">
                         <div class="menu-category-header" onclick="toggleCategory('cat-admin')">
@@ -1032,6 +1032,7 @@
                                 <span>Configuración</span>
                             </a>
 
+                            @if($user->esAdmin())
                             <a href="/configuracion/festivos" class="{{ Request::is('configuracion/festivos*') ? 'active' : '' }}">
                                 <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
                                     <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
@@ -1042,6 +1043,7 @@
                                 </svg>
                                 <span>Días Festivos</span>
                             </a>
+                            @endif
                         </div>
                     </div>
                 @endif
@@ -1092,6 +1094,8 @@
                             <span class="user-role">
                                 @if($user->role === 'administrador')
                                     Administrador
+                                @elseif($user->role === 'supervisor')
+                                    Supervisor
                                 @elseif($user->role === 'solo_lectura')
                                     Solo Visualización
                                 @else

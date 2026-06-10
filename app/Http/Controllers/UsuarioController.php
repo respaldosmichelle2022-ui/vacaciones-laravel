@@ -46,7 +46,7 @@ class UsuarioController extends Controller
                 }
             ],
             'password' => 'required|string|min:6',
-            'role' => 'required|in:administrador,empleado,solo_lectura',
+            'role' => 'required|in:administrador,empleado,solo_lectura,supervisor',
             'sitio' => 'nullable|string|max:255',
         ]);
 
@@ -96,7 +96,7 @@ class UsuarioController extends Controller
                 }
             ],
             'password' => 'nullable|string|min:6',
-            'role' => 'required|in:administrador,empleado,solo_lectura',
+            'role' => 'required|in:administrador,empleado,solo_lectura,supervisor',
             'sitio' => 'nullable|string|max:255',
         ]);
 

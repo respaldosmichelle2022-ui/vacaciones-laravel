@@ -20,8 +20,8 @@ class AdminMiddleware
             return redirect('/login');
         }
 
-        if (!Auth::user()->esAdmin()) {
-            return redirect('/mi-sitio')->with('error', 'No tienes permisos de administrador.');
+        if (!Auth::user()->esAdmin() && !Auth::user()->esSupervisor()) {
+            return redirect('/mi-sitio')->with('error', 'No tienes permisos suficientes.');
         }
 
         return $next($request);

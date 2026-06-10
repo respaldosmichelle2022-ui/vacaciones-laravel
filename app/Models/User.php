@@ -69,4 +69,9 @@ class User extends Authenticatable
     {
         return $this->role === 'solo_lectura';
     }
+
+    public function esSupervisor()
+    {
+        return $this->role === 'supervisor';
+    }
 }

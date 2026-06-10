@@ -32,8 +32,9 @@
             <label for="role">Rol en el Sistema</label>
             <select name="role" id="roleSelect" required onchange="toggleSitioSelect()">
                 <option value="empleado" {{ old('role', $user->role) === 'empleado' ? 'selected' : '' }}>Empleado (Acceso limitado a su sitio propio)</option>
-                <option value="solo_lectura" {{ old('role', $user->role) === 'solo_lectura' ? 'selected' : '' }}>Solo Visualización (Consulta de información en su sitio asignado)</option>
+                 <option value="solo_lectura" {{ old('role', $user->role) === 'solo_lectura' ? 'selected' : '' }}>Solo Visualización (Consulta de información en su sitio asignado)</option>
                 <option value="administrador" {{ old('role', $user->role) === 'administrador' ? 'selected' : '' }}>Administrador (Control total del sistema)</option>
+                <option value="supervisor" {{ old('role', $user->role) === 'supervisor' ? 'selected' : '' }}>Supervisor (Acceso total a menús y sitios, configuración limitada)</option>
             </select>
             <div id="infoSoloLectura" style="display: none; background-color: #fef08a; color: #854d0e; padding: 10px; border-radius: 6px; margin-top: 8px; font-size: 13px; font-weight: 500; border: 1px solid #fde047;">
                 ℹ️ <strong>Solo Visualización:</strong> Este tipo de usuario solo puede consultar datos del sitio asignado. No podrá realizar modificaciones, eliminaciones ni importar información.
@@ -65,7 +66,7 @@
         const sitioSelect = document.getElementById('sitio');
         const infoSoloLectura = document.getElementById('infoSoloLectura');
         
-        if (role === 'administrador') {
+        if (role === 'administrador' || role === 'supervisor') {
             sitioSelect.required = false;
         } else {
             sitioSelect.required = true;

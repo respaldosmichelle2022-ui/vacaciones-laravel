@@ -9,6 +9,31 @@ use Illuminate\Support\Facades\DB;
 
 class SettingController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware(function ($request, $next) {
+            $user = auth()->user();
+            $action = $request->route()->getActionMethod();
+            
+            $adminOnlyMethods = [
+                'guardarLogo',
+                'guardarPosicion',
+                'guardarTitulo',
+                'guardarImagenLogin',
+                'eliminarImagenLogin',
+                'diaFestivosIndex',
+                'diaFestivosStore',
+                'diaFestivosDelete'
+            ];
+            
+            if (in_array($action, $adminOnlyMethods) && !$user->esAdmin()) {
+                abort(403, 'Acceso denegado. Solo administradores pueden realizar esta acción.');
+            }
+            
+            return $next($request);
+        });
+    }
+
     public function index()
     {
         $logoPath = Setting::getVal('logo_path', '/logo-placeholder.png');

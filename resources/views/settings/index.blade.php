@@ -5,6 +5,7 @@
 <div style="max-width: 700px; margin: 0 auto;">
     <h1 style="margin-bottom: 25px; font-weight: 700; color: #0f172a;">Configuración de Identidad Corporativa</h1>
 
+    @if(Auth::user()->esAdmin())
     <!-- Preview Box -->
     <div style="background: #f1f5f9; padding: 25px; border-radius: 12px; margin-bottom: 30px; text-align: center; border: 1px dashed #cbd5e1;">
         <span style="display: block; font-size: 13px; font-weight: 600; color: #64748b; text-transform: uppercase; margin-bottom: 15px;">Vista Previa del Logo Actual</span>
@@ -102,6 +103,7 @@
             </button>
         </form>
     </div>
+    @endif
 
     <!-- Backup and Restore Section -->
     <div style="background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 25px; margin-top: 30px;">
