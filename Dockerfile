@@ -49,6 +49,9 @@ RUN composer install --no-interaction --optimize-autoloader --no-dev
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache /var/www/html/public/uploads \
     && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache /var/www/html/public/uploads
 
+# Ajustar permisos para que Nginx pueda escribir en directorios temporales y logs ejecutándose como www-data
+RUN chown -R www-data:www-data /var/lib/nginx /var/log/nginx
+
 # Copiar configuraciones de Nginx y Supervisor
 COPY docker/nginx.conf /etc/nginx/nginx.conf
 COPY docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
