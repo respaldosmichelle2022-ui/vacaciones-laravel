@@ -17,9 +17,19 @@
 
         <div style="background: #f8fafc; border: 1px solid #e2e8f0; padding: 20px; border-radius: 12px; margin-bottom: 20px;">
             <h3 style="margin-bottom: 15px; font-size: 15px; font-weight: 600; color: #1e293b; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px;">
-                Información del Sistema (Solo Lectura)
+                Información de la Cuenta (Solo Lectura)
             </h3>
             
+            <div class="grupo">
+                <label>Nombre Completo</label>
+                <input type="text" value="{{ $user->name }}" disabled style="background-color: #f1f5f9; color: #64748b; cursor: not-allowed; border-color: #e2e8f0;">
+            </div>
+
+            <div class="grupo">
+                <label>Usuario o Correo Electrónico (Login)</label>
+                <input type="text" value="{{ $user->email }}" disabled style="background-color: #f1f5f9; color: #64748b; cursor: not-allowed; border-color: #e2e8f0;">
+            </div>
+
             <div class="grupo">
                 <label>Rol Asignado</label>
                 <input type="text" value="@if($user->role === 'administrador')Administrador (Control total)@elseif($user->role === 'supervisor')Supervisor (Acceso total)@elseif($user->role === 'solo_lectura')Solo Visualización@elseEmpleado (Mi Sitio)@endif" disabled style="background-color: #f1f5f9; color: #64748b; cursor: not-allowed; border-color: #e2e8f0;">
@@ -31,44 +41,33 @@
             </div>
         </div>
 
-        <div style="background: #ffffff; border: 1px solid #e2e8f0; padding: 20px; border-radius: 12px; margin-bottom: 20px;">
-            <h3 style="margin-bottom: 15px; font-size: 15px; font-weight: 600; color: #1e293b; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px;">
-                Datos de Usuario
-            </h3>
-
-            <div class="grupo">
-                <label for="name">Nombre Completo</label>
-                <input type="text" name="name" id="name" required placeholder="Nombre de la persona" value="{{ old('name', $user->name) }}">
-            </div>
-
-            <div class="grupo" style="margin-bottom: 0;">
-                <label for="email">Usuario o Correo Electrónico (Login)</label>
-                <input type="text" name="email" id="email" required placeholder="usuario, usuario123 o correo@empresa.com" value="{{ old('email', $user->email) }}">
-            </div>
-        </div>
-
         <div style="background: #ffffff; border: 1px solid #e2e8f0; padding: 20px; border-radius: 12px; margin-bottom: 25px;">
             <h3 style="margin-bottom: 15px; font-size: 15px; font-weight: 600; color: #1e293b; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px;">
-                Cambiar Contraseña
+                Modificar Contraseña de Acceso
             </h3>
             
             <p style="color: #64748b; font-size: 12.5px; margin-bottom: 15px;">
-                Deje estos campos en blanco si no desea modificar su contraseña de acceso.
+                Por seguridad, ingrese su contraseña actual para poder registrar la nueva contraseña.
             </p>
 
             <div class="grupo">
+                <label for="current_password">Contraseña Actual</label>
+                <input type="password" name="current_password" id="current_password" required placeholder="Ingrese su contraseña actual">
+            </div>
+
+            <div class="grupo">
                 <label for="password">Nueva Contraseña</label>
-                <input type="password" name="password" id="password" placeholder="Mínimo 6 caracteres (opcional)">
+                <input type="password" name="password" id="password" required placeholder="Mínimo 6 caracteres">
             </div>
 
             <div class="grupo" style="margin-bottom: 0;">
                 <label for="password_confirmation">Confirmar Nueva Contraseña</label>
-                <input type="password" name="password_confirmation" id="password_confirmation" placeholder="Repita la nueva contraseña">
+                <input type="password" name="password_confirmation" id="password_confirmation" required placeholder="Repita la nueva contraseña">
             </div>
         </div>
 
         <button type="submit" class="boton" style="width: 100%; justify-content: center; background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); box-shadow: 0 4px 14px rgba(99, 102, 241, 0.3);">
-            Guardar Cambios
+            Actualizar Contraseña
         </button>
     </form>
 </div>
