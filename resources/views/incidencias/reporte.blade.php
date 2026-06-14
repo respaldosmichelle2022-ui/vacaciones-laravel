@@ -174,7 +174,7 @@
 </div>
 
 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-    <h3 style="font-weight: 600; color: #ffffff; margin: 0;">Clasificación de Desempeño y Tasas del Periodo</h3>
+    <h3 style="font-weight: 600; color: #0f172a; margin: 0;">Clasificación de Desempeño y Tasas del Periodo</h3>
     <button onclick="window.print()" class="boton no-print" style="background: #475569; padding: 10px 18px; font-size: 13px;">
         <span>🖨️</span> Imprimir Reporte
     </button>
@@ -232,7 +232,7 @@
                     data-total-global="{{ $item['total_global'] }}"
                     data-desempeno="{{ $score }}">
                     <td style="font-weight: 600;">
-                        <span style="color: #ffffff;">#{{ $emp->numero_empleado }} - {{ $emp->nombre }} {{ $emp->apellido_paterno }} {{ $emp->apellido_materno }}</span>
+                        <span style="color: #0f172a;">#{{ $emp->numero_empleado }} - {{ $emp->nombre }} {{ $emp->apellido_paterno }} {{ $emp->apellido_materno }}</span>
                         <div style="color: #94a3b8; font-size: 11px; font-weight: 400; margin-top: 3px;">
                             {{ $emp->puesto ?? 'Sin puesto' }} | <span style="font-weight: 500;">{{ $emp->sitio ?: 'N/A' }}</span>
                         </div>
@@ -352,7 +352,7 @@
                             position: 'top',
                             labels: {
                                 boxWidth: 12,
-                                color: '#cbd5e1',
+                                color: '#334155',
                                 font: {
                                     family: 'Outfit',
                                     size: 12,
@@ -375,7 +375,7 @@
                                 display: false
                             },
                             ticks: {
-                                color: '#cbd5e1',
+                                color: '#475569',
                                 font: {
                                     family: 'Outfit',
                                     size: 11
@@ -386,7 +386,7 @@
                             stacked: true,
                             beginAtZero: true,
                             ticks: {
-                                color: '#cbd5e1',
+                                color: '#475569',
                                 font: {
                                     family: 'Outfit'
                                 },
