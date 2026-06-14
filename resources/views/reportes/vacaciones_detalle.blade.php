@@ -23,7 +23,7 @@
         <h4 style="margin-bottom: 15px; color: #334155; font-weight: 600; display: flex; align-items: center; gap: 8px;">
             <span>🔍</span> Filtros del Reporte
         </h4>
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; align-items: end;">
             <!-- Filtro por Sitio (JS Client-Side) -->
             <div class="grupo" style="margin-bottom: 0;">
                 <label style="font-size: 12px; font-weight: 600; color: #64748b;">Sitio</label>
@@ -42,14 +42,28 @@
                 <div id="buscar-empleado-autocomplete" style="display: none; position: absolute; top: 100%; left: 0; width: 100%; background: white; border: 1px solid #cbd5e1; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); z-index: 999; max-height: 200px; overflow-y: auto; margin-top: 5px;"></div>
             </div>
 
-            <!-- Filtro de Periodo (Backend reload) -->
-            <div class="grupo" style="margin-bottom: 0;">
-                <label style="font-size: 12px; font-weight: 600; color: #64748b;">Periodo (Año)</label>
-                <select name="periodo" onchange="document.getElementById('formFiltrosReporte').submit()" style="padding: 10px; font-size: 13px;">
+            <!-- Filtro de Periodo (Multi-selección) -->
+            <div class="grupo" style="margin-bottom: 0; grid-column: span 2;">
+                <label style="font-size: 12px; font-weight: 600; color: #64748b; margin-bottom: 8px; display: block;">Periodo (Año)</label>
+                <div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 10px; padding: 10px 15px;">
+                    <label style="display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: #1e293b; cursor: pointer; user-select: none;">
+                        <input type="checkbox" id="chk-todos" value="todos" {{ in_array('todos', $requestPeriodos) ? 'checked' : '' }} style="width: 16px; height: 16px; accent-color: #10b981; cursor: pointer;">
+                        Todos
+                    </label>
+                    <div style="width: 1px; height: 20px; background: #cbd5e1; margin: 0 4px;"></div>
                     @foreach($periodos as $p)
-                        <option value="{{ $p }}" {{ $selectedPeriod == $p ? 'selected' : '' }}>{{ $p }}</option>
+                        <label style="display: flex; align-items: center; gap: 6px; font-size: 13px; color: #334155; cursor: pointer; user-select: none;">
+                            <input type="checkbox" name="periodos[]" class="chk-periodo" value="{{ $p }}" {{ in_array($p, $selectedPeriods) ? 'checked' : '' }} style="width: 16px; height: 16px; accent-color: #10b981; cursor: pointer;">
+                            {{ $p }}
+                        </label>
                     @endforeach
-                </select>
+                </div>
+            </div>
+
+            <div style="margin-bottom: 0; display: flex; gap: 10px;">
+                <button type="submit" class="boton" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); box-shadow: 0 4px 14px rgba(16, 185, 129, 0.3); padding: 10px 18px; font-size: 13px; font-weight: 600; border: none; cursor: pointer; border-radius: 10px; color: white;">
+                    <span>🔍</span> Filtrar
+                </button>
             </div>
         </div>
     </form>
@@ -58,88 +72,108 @@
 <!-- Listado de Tarjetas Detalladas -->
 <div id="listado-tarjetas">
     @forelse($reporte as $col)
-        <div class="card tarjeta-desglose" data-sitio="{{ $col['sitio'] }}" data-nombre="{{ $col['nombre'] }} #{{ $col['numero_empleado'] }}" style="margin-bottom: 25px; padding: 24px; border: 1px solid #e2e8f0; border-radius: 16px; background: white; box-shadow: 0 4px 12px rgba(0,0,0,0.02); page-break-inside: avoid;">
-            <!-- Encabezado de la Tarjeta -->
-            <div style="display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 1px solid #f1f5f9; padding-bottom: 15px; margin-bottom: 15px;">
+        <div class="card tarjeta-desglose" data-sitio="{{ $col['sitio'] }}" data-nombre="{{ $col['nombre'] }} #{{ $col['numero_empleado'] }}" data-empleado-id="{{ $col['id'] }}" style="margin-bottom: 25px; padding: 24px; border: 1px solid #e2e8f0; border-radius: 16px; background: white; box-shadow: 0 4px 12px rgba(0,0,0,0.02); page-break-inside: avoid;">
+            <!-- Encabezado de la Tarjeta (Empleado) -->
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 2px solid #f1f5f9; padding-bottom: 15px; margin-bottom: 20px;">
                 <div>
-                    <h3 style="margin: 0 0 5px 0; font-size: 17px; font-weight: 700; color: #0f172a;">
-                        #{{ $col['numero_empleado'] }} - {{ $col['nombre'] }}
+                    <h3 style="margin: 0 0 5px 0; font-size: 18px; font-weight: 700; color: #0f172a;">
+                        {{ $col['nombre'] }} <span style="color: #64748b; font-size: 14px; font-weight: 500;">(#{{ $col['numero_empleado'] }})</span>
                     </h3>
-                    <div style="color: #64748b; font-size: 12px; font-weight: 500;">
+                    <div style="color: #64748b; font-size: 13px; font-weight: 500;">
                         Puesto: <strong style="color: #334155;">{{ $col['puesto'] }}</strong> | Sitio: <span style="background: #e2e8f0; color: #334155; padding: 2px 6px; border-radius: 4px; font-weight: 600;">{{ $col['sitio'] }}</span>
                     </div>
                 </div>
-                <div style="text-align: right;">
-                    <span style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: #64748b; font-weight: 600; display: block;">Periodo</span>
-                    <strong style="font-size: 20px; color: #2563eb; font-weight: 800;">{{ $col['periodo'] }}</strong>
-                </div>
             </div>
 
-            <!-- Tabla de cálculo paso a paso -->
-            <div style="overflow-x: auto;">
-                <table style="width: 100%; border-collapse: collapse; border: none; border-radius: 8px; overflow: hidden; margin-top: 5px;">
-                    <thead>
-                        <tr style="background: #f8fafc; border-bottom: 1px solid #e2e8f0;">
-                            <th style="padding: 10px 14px; text-align: left; font-size: 12px; font-weight: 600; color: #64748b; text-transform: uppercase;">Operación</th>
-                            <th style="padding: 10px 14px; text-align: left; font-size: 12px; font-weight: 600; color: #64748b; text-transform: uppercase;">Fechas / Detalle</th>
-                            <th style="padding: 10px 14px; text-align: center; font-size: 12px; font-weight: 600; color: #64748b; text-transform: uppercase;">Días</th>
-                            <th style="padding: 10px 14px; text-align: right; font-size: 12px; font-weight: 600; color: #64748b; text-transform: uppercase;">Saldo Acumulado</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($col['pasos'] as $paso)
-                            <tr style="border-bottom: 1px solid #f1f5f9; background: white;">
-                                <td style="padding: 10px 14px; font-size: 13.5px; font-weight: 600;">
-                                    @if($paso['tipo'] === 'inicial')
-                                        <span style="color: #2563eb; background: #eff6ff; padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 700; text-transform: uppercase;">Asignación Inicial</span>
-                                    @else
-                                        <span style="color: #b45309; background: #fffbeb; padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 700; text-transform: uppercase;">Deducción</span>
-                                    @endif
-                                </td>
-                                <td style="padding: 10px 14px; font-size: 13.5px; color: #475569;">
-                                    {{ $paso['detalle'] }}
-                                    @if($paso['fecha'])
-                                        <div style="font-size: 11px; color: #94a3b8; margin-top: 2px;">{{ $paso['fecha'] }}</div>
-                                    @endif
-                                </td>
-                                <td style="padding: 10px 14px; font-size: 14px; text-align: center; font-weight: 700; color: {{ $paso['tipo'] === 'inicial' ? '#2563eb' : '#b45309' }}">
-                                    {{ $paso['cambio'] }}
-                                </td>
-                                <td style="padding: 10px 14px; font-size: 14px; text-align: right; font-weight: 700; color: #1e293b;">
-                                    {{ $paso['acumulado'] }} días
-                                </td>
-                            </tr>
-                        @endforeach
-                        <!-- Fila de Saldo Final -->
-                        <tr style="background: #f8fafc; border-top: 1.5px solid #cbd5e1;">
-                            <td colspan="2" style="padding: 12px 14px; font-size: 14px; font-weight: 700; color: #0f172a; text-transform: uppercase;">Saldo Final de Vacaciones</td>
-                            <td style="padding: 12px 14px; text-align: center;"></td>
-                            <td style="padding: 12px 14px; text-align: right; font-size: 15px; font-weight: 800; color: #166534; background: #f0fdf4;">
-                                {{ $col['saldo_final'] }} días
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+            <!-- Desglose por Periodo -->
+            @foreach($col['saldos'] as $saldo)
+                <div style="margin-bottom: 20px; border: 1px solid #f1f5f9; border-radius: 12px; padding: 18px; background: #fafafa; box-shadow: 0 2px 6px rgba(0,0,0,0.01);">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px;">
+                        <span style="font-size: 14px; font-weight: 700; color: #0f172a; text-transform: uppercase;">
+                             📅 Periodo: <span style="color: #10b981;">{{ $saldo['periodo'] }}</span>
+                        </span>
+                        <span style="font-size: 12px; color: #64748b;">
+                             Días correspondientes: <strong style="color: #0f172a;">{{ $saldo['dias_corresponden'] }}</strong>
+                        </span>
+                    </div>
+
+                    <!-- Tabla de cálculo paso a paso -->
+                    <div style="overflow-x: auto;">
+                        <table style="width: 100%; border-collapse: collapse; border: none; border-radius: 8px; overflow: hidden; margin-top: 5px;">
+                            <thead>
+                                <tr style="background: #f8fafc; border-bottom: 1px solid #e2e8f0;">
+                                    <th style="padding: 10px 14px; text-align: left; font-size: 12px; font-weight: 600; color: #64748b; text-transform: uppercase;">Operación</th>
+                                    <th style="padding: 10px 14px; text-align: left; font-size: 12px; font-weight: 600; color: #64748b; text-transform: uppercase;">Fechas / Detalle</th>
+                                    <th style="padding: 10px 14px; text-align: center; font-size: 12px; font-weight: 600; color: #64748b; text-transform: uppercase;">Días</th>
+                                    <th style="padding: 10px 14px; text-align: right; font-size: 12px; font-weight: 600; color: #64748b; text-transform: uppercase;">Saldo Acumulado</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($saldo['pasos'] as $paso)
+                                    <tr style="border-bottom: 1px solid #f1f5f9; background: white;">
+                                        <td style="padding: 10px 14px; font-size: 13.5px; font-weight: 600;">
+                                            @if($paso['tipo'] === 'inicial')
+                                                <span style="color: #10b981; background: #ecfdf5; padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 700; text-transform: uppercase;">Asignación Inicial</span>
+                                            @else
+                                                <span style="color: #b45309; background: #fffbeb; padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 700; text-transform: uppercase;">Deducción</span>
+                                            @endif
+                                        </td>
+                                        <td style="padding: 10px 14px; font-size: 13.5px; color: #475569;">
+                                            {{ $paso['detalle'] }}
+                                            @if($paso['fecha'])
+                                                <div style="font-size: 11px; color: #94a3b8; margin-top: 2px;">{{ $paso['fecha'] }}</div>
+                                            @endif
+                                        </td>
+                                        <td style="padding: 10px 14px; font-size: 14px; text-align: center; font-weight: 700; color: {{ $paso['tipo'] === 'inicial' ? '#10b981' : '#b45309' }}">
+                                            {{ $paso['cambio'] }}
+                                        </td>
+                                        <td style="padding: 10px 14px; font-size: 14px; text-align: right; font-weight: 700; color: #1e293b;">
+                                            {{ $paso['acumulado'] }} días
+                                        </td>
+                                    </tr>
+                                @endforeach
+                                <!-- Fila de Saldo Final -->
+                                <tr style="background: #f8fafc; border-top: 1.5px solid #cbd5e1;">
+                                    <td colspan="2" style="padding: 12px 14px; font-size: 14px; font-weight: 700; color: #0f172a; text-transform: uppercase;">Saldo Final del Periodo</td>
+                                    <td style="padding: 12px 14px; text-align: center;"></td>
+                                    <td style="padding: 12px 14px; text-align: right; font-size: 15px; font-weight: 800; color: #047857; background: #ecfdf5;">
+                                        {{ $saldo['saldo_final'] }} días
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            @endforeach
         </div>
     @empty
         <div class="card" style="padding: 30px; text-align: center; color: #94a3b8;">
-            No existen registros cargados para el periodo {{ $selectedPeriod }}.
+            No existen registros cargados para los periodos seleccionados.
         </div>
     @endforelse
 </div>
 
 <script>
     function exportarExcel() {
-        const queryParams = new URLSearchParams(window.location.search);
-        queryParams.set('periodo', '{{ $selectedPeriod }}');
+        const queryParams = new URLSearchParams();
         
         const sitio = document.getElementById('filtro-sitio').value;
         if (sitio) queryParams.set('sitio', sitio);
         
-        const empleado = document.getElementById('buscar-empleado').value;
-        if (empleado) {
-            queryParams.set('empleado_id', document.getElementById('buscar-empleado').getAttribute('data-id') || '');
+        const searchInput = document.getElementById('buscar-empleado');
+        const empleadoId = searchInput.getAttribute('data-id');
+        if (empleadoId && searchInput.value.trim() !== '') {
+            queryParams.set('empleado_id', empleadoId);
+        }
+
+        const chkTodos = document.getElementById('chk-todos');
+        if (chkTodos && chkTodos.checked) {
+            queryParams.append('periodos[]', 'todos');
+        } else {
+            const checkboxes = document.querySelectorAll('.chk-periodo:checked');
+            checkboxes.forEach(cb => {
+                queryParams.append('periodos[]', cb.value);
+            });
         }
 
         window.location.href = '/reportes/vacaciones-detalle/exportar?' + queryParams.toString();
@@ -150,16 +184,40 @@
         const autocompleteDiv = document.getElementById('buscar-empleado-autocomplete');
         const filterSitio = document.getElementById('filtro-sitio');
         const cards = document.querySelectorAll('#listado-tarjetas .tarjeta-desglose');
+        
+        // Manejo de Checkboxes de Periodo (Seleccionar todos / individuales)
+        const chkTodos = document.getElementById('chk-todos');
+        const chkPeriodos = document.querySelectorAll('.chk-periodo');
+
+        if (chkTodos) {
+            chkTodos.addEventListener('change', function() {
+                chkPeriodos.forEach(cb => {
+                    cb.checked = chkTodos.checked;
+                });
+            });
+
+            chkPeriodos.forEach(cb => {
+                cb.addEventListener('change', function() {
+                    if (!cb.checked) {
+                        chkTodos.checked = false;
+                    } else {
+                        const allChecked = Array.from(chkPeriodos).every(item => item.checked);
+                        chkTodos.checked = allChecked;
+                    }
+                });
+            });
+        }
 
         // Colección de empleados
         let uniqueEmployees = [];
         cards.forEach(function(card) {
             let nameAttr = card.getAttribute('data-nombre');
+            let empIdAttr = card.getAttribute('data-empleado-id');
             if (nameAttr) {
                 let cleanName = nameAttr.split('#')[0].trim();
                 let number = nameAttr.split('#')[1] || '';
                 if (!uniqueEmployees.some(e => e.name === cleanName)) {
-                    uniqueEmployees.push({ name: cleanName, number: number });
+                    uniqueEmployees.push({ id: empIdAttr, name: cleanName, number: number });
                 }
             }
         });
@@ -215,6 +273,7 @@
                     
                     item.addEventListener('click', function() {
                         searchInput.value = e.name;
+                        searchInput.setAttribute('data-id', e.id);
                         autocompleteDiv.style.display = 'none';
                         applyFilters();
                     });
@@ -230,6 +289,13 @@
         searchInput.addEventListener('keyup', function() {
             applyFilters();
             showAutocomplete();
+        });
+
+        searchInput.addEventListener('input', function() {
+            if (searchInput.value.trim() === '') {
+                searchInput.removeAttribute('data-id');
+                applyFilters();
+            }
         });
 
         document.addEventListener('click', function(evt) {
