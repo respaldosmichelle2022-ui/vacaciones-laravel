@@ -41,6 +41,10 @@
                         <span style="padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; text-transform: uppercase; background: #fef08a; color: #854d0e;">
                             Solo Visualización
                         </span>
+                    @elseif($u->role === 'supervisor')
+                        <span style="padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; text-transform: uppercase; background: #e0e7ff; color: #4338ca;">
+                            Supervisor
+                        </span>
                     @else
                         <span style="padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; text-transform: uppercase; background: #e0f2fe; color: #0369a1;">
                             Empleado
