@@ -137,9 +137,9 @@
             pointer-events: none;
         }
 
-        /* Categorías Colapsables */
+        /* Categorías Colapsables (Menús Principales) */
         .menu-category-wrapper {
-            margin-bottom: 6px;
+            margin-bottom: 12px;
             transition: all 0.3s ease;
         }
 
@@ -147,28 +147,40 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            font-size: 11px;
+            font-size: 12px;
             text-transform: uppercase;
-            letter-spacing: 1.2px;
-            color: #64748b;
-            font-weight: 700;
-            margin-top: 14px;
-            margin-bottom: 4px;
-            padding: 8px 12px;
+            letter-spacing: 1px;
+            color: #cbd5e1;
+            font-weight: 600;
+            margin-top: 8px;
+            margin-bottom: 6px;
+            padding: 12px 16px;
             cursor: pointer;
-            border-radius: 6px;
+            border-radius: 10px;
             user-select: none;
-            transition: all 0.2s ease;
+            background: #1e293b;
+            border: 1px solid #334155;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .menu-category-header:hover {
             color: #f8fafc;
-            background: rgba(255, 255, 255, 0.05);
+            background: #2e3b4e;
+            border-color: #475569;
+            transform: translateY(-1px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
+        }
+
+        .menu-category-header-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
         .menu-category-header svg.chevron-icon {
-            width: 12px;
-            height: 12px;
+            width: 14px;
+            height: 14px;
             stroke: currentColor;
             fill: none;
             stroke-width: 2.5;
@@ -178,16 +190,21 @@
         .menu-category-content {
             display: flex;
             flex-direction: column;
-            gap: 4px;
+            gap: 6px;
             overflow: hidden;
             transition: max-height 0.3s ease-out, opacity 0.2s ease;
             max-height: 500px;
             opacity: 1;
+            padding: 8px 0 4px 14px;
+            margin-left: 14px;
+            border-left: 1px dashed #334155;
         }
 
         .menu-category-wrapper.collapsed .menu-category-content {
             max-height: 0;
             opacity: 0;
+            padding-top: 0;
+            padding-bottom: 0;
             pointer-events: none;
         }
 
@@ -195,25 +212,26 @@
             transform: rotate(-90deg);
         }
 
-        /* Enlaces del Menú */
+        /* Enlaces del Menú (Módulos Internos) */
         .menu a {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
             text-decoration: none;
-            padding: 10px 14px;
+            padding: 8px 12px;
             border-radius: 8px;
             font-weight: 500;
-            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 13px;
+            color: #94a3b8;
+            background: transparent;
+            border: 1px solid transparent;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
-            border: 1px solid #1e293b;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-            background: #1e293b;
         }
 
         .menu a svg {
-            width: 20px;
-            height: 20px;
+            width: 18px;
+            height: 18px;
             stroke: currentColor;
             fill: none;
             stroke-width: 2;
@@ -297,8 +315,10 @@
 
         /* Hovers - Inactivos */
         .menu a:not(.active):hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transform: translateX(4px);
+            background: rgba(255, 255, 255, 0.03);
+            border-color: rgba(255, 255, 255, 0.08);
+            box-shadow: none;
         }
 
         .menu a:not(.active):hover[href="/"] {
@@ -894,8 +914,11 @@
             @if($user)
                 <!-- Inicio (Siempre visible) -->
                 <div class="menu-category-wrapper" id="cat-inicio">
-                    <div class="menu-category-header" style="cursor: default; background: transparent; pointer-events: none;">
-                        <span>Inicio</span>
+                    <div class="menu-category-header" style="cursor: default; pointer-events: none;">
+                        <div class="menu-category-header-left">
+                            <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" style="width:16px; height:16px;"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                            <span>Inicio</span>
+                        </div>
                     </div>
                     <div class="menu-category-content">
                         <a href="/" class="{{ Request::is('/') ? 'active' : '' }}">
@@ -923,7 +946,10 @@
                 <!-- Recursos Humanos (Colapsable) -->
                 <div class="menu-category-wrapper" id="cat-rh">
                     <div class="menu-category-header" onclick="toggleCategory('cat-rh')">
-                        <span>Recursos Humanos</span>
+                        <div class="menu-category-header-left">
+                            <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" style="width:16px; height:16px;"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+                            <span>Recursos Humanos</span>
+                        </div>
                         <svg class="chevron-icon" viewBox="0 0 24 24">
                             <polyline points="6 9 12 15 18 9"></polyline>
                         </svg>
@@ -978,7 +1004,10 @@
                 <!-- Reportes (Colapsable) -->
                 <div class="menu-category-wrapper" id="cat-reports">
                     <div class="menu-category-header" onclick="toggleCategory('cat-reports')">
-                        <span>Reportes</span>
+                        <div class="menu-category-header-left">
+                            <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" style="width:16px; height:16px;"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+                            <span>Reportes</span>
+                        </div>
                         <svg class="chevron-icon" viewBox="0 0 24 24">
                             <polyline points="6 9 12 15 18 9"></polyline>
                         </svg>
@@ -999,7 +1028,10 @@
                     <!-- Administración (Colapsable) -->
                     <div class="menu-category-wrapper" id="cat-admin">
                         <div class="menu-category-header" onclick="toggleCategory('cat-admin')">
-                            <span>Administración</span>
+                            <div class="menu-category-header-left">
+                                <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" style="width:16px; height:16px;"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06-.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                                <span>Administración</span>
+                            </div>
                             <svg class="chevron-icon" viewBox="0 0 24 24">
                                 <polyline points="6 9 12 15 18 9"></polyline>
                             </svg>
@@ -1016,7 +1048,7 @@
                             <a href="/configuracion" class="{{ Request::is('configuracion') ? 'active' : '' }}">
                                 <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
                                     <circle cx="12" cy="12" r="3"></circle>
-                                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06-.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
                                 </svg>
                                 <span>Configuración</span>
                             </a>
