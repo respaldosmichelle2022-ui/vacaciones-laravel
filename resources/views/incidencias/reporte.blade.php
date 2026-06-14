@@ -299,6 +299,18 @@
         // Instancia del gráfico
         let chartInstance = null;
 
+        function wrapLabel(name) {
+            const words = name.split(' ');
+            if (words.length <= 2) {
+                return name;
+            }
+            const mid = Math.ceil(words.length / 2);
+            return [
+                words.slice(0, mid).join(' '),
+                words.slice(mid).join(' ')
+            ];
+        }
+
         function updateChart(chartData) {
             const ctx = document.getElementById('incidenciasChart').getContext('2d');
             if (chartInstance) {
@@ -361,7 +373,22 @@
                             }
                         },
                         tooltip: {
+                            backgroundColor: 'rgba(15, 23, 42, 0.95)',
+                            titleColor: '#ffffff',
+                            bodyColor: '#e2e8f0',
+                            borderColor: 'rgba(255, 255, 255, 0.1)',
+                            borderWidth: 1,
+                            padding: 10,
+                            boxPadding: 4,
+                            usePointStyle: true,
                             callbacks: {
+                                title: function(context) {
+                                    const label = context[0].label;
+                                    if (Array.isArray(label)) {
+                                        return label.join(' ');
+                                    }
+                                    return label;
+                                },
                                 label: function(context) {
                                     return ` ${context.dataset.label}: ${context.raw}`;
                                 }
@@ -376,9 +403,13 @@
                             },
                             ticks: {
                                 color: '#475569',
+                                autoSkip: false,
+                                maxRotation: 45,
+                                minRotation: 0,
                                 font: {
                                     family: 'Outfit',
-                                    size: 11
+                                    size: 9,
+                                    weight: '500'
                                 }
                             }
                         },
@@ -457,10 +488,10 @@
                     sumDesempeno += rowDesempeno;
                     visibleCount++;
 
-                    // Agregar al dataset del gráfico (primer nombre + apellido)
-                    const nameParts = rowNombre.split(' ');
-                    const shortName = nameParts[0] + ' ' + (nameParts[1] || '');
-                    chartData.labels.push(shortName);
+                    // Obtener nombre completo de los datos originales
+                    const rawNombre = row.getAttribute('data-nombre') || '';
+                    const fullName = rawNombre.split('#')[0].trim();
+                    chartData.labels.push(wrapLabel(fullName));
                     chartData.faltas.push(rowFaltas);
                     chartData.retardos.push(rowRetardos);
                     chartData.permisos.push(rowPermisos);
