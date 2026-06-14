@@ -65,8 +65,12 @@
             flex-direction: column;
             align-items: center;
             margin-bottom: 25px;
-            padding-bottom: 20px;
-            border-bottom: 1px solid #1e293b;
+            padding: 20px 15px;
+            background: rgba(30, 41, 59, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 14px;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
         }
 
         .logo-img {
@@ -83,12 +87,17 @@
         }
 
         .logo-text {
-            font-size: 20px;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-            background: linear-gradient(to right, #0284c7, #2563eb);
+            font-size: 15px;
+            font-weight: 800;
+            letter-spacing: 0.6px;
+            background: linear-gradient(135deg, #38bdf8 0%, #60a5fa 50%, #c084fc 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            text-align: center;
+            display: block;
+            width: 100%;
+            line-height: 1.4;
+            filter: drop-shadow(0 2px 8px rgba(56, 189, 248, 0.3));
         }
 
         .menu {
@@ -914,7 +923,7 @@
             @if($logoPosition === 'sidebar_top')
                 <img src="{{ $logoPath }}" alt="Logo Corporativo" class="logo-img">
             @endif
-            <span class="logo-text" style="font-size: 15px; text-align: center; display: block; width: 100%;">{{ \App\Models\Setting::getVal('system_title', 'Plataforma Corporativa RH') }}</span>
+            <span class="logo-text">{{ \App\Models\Setting::getVal('system_title', 'Plataforma Corporativa RH') }}</span>
         </div>
 
         @if($user)
