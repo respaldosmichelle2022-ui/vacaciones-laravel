@@ -954,26 +954,6 @@
                             <span>Saldos Vacaciones</span>
                         </a>
 
-                        <a href="/incidencias" class="{{ Request::is('incidencias*') && !Request::is('incidencias/reporte*') ? 'active' : '' }}">
-                            <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
-                                <line x1="12" y1="9" x2="12" y2="13"></line>
-                                <line x1="12" y1="17" x2="12.01" y2="17"></line>
-                            </svg>
-                            <span>Incidencias</span>
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Operaciones (Colapsable) -->
-                <div class="menu-category-wrapper" id="cat-ops">
-                    <div class="menu-category-header" onclick="toggleCategory('cat-ops')">
-                        <span>Operaciones</span>
-                        <svg class="chevron-icon" viewBox="0 0 24 24">
-                            <polyline points="6 9 12 15 18 9"></polyline>
-                        </svg>
-                    </div>
-                    <div class="menu-category-content">
                         <a href="/movimientos" class="{{ Request::is('movimientos*') ? 'active' : '' }}">
                             <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
                                 <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
@@ -982,6 +962,15 @@
                                 <line x1="3" y1="10" x2="21" y2="10"></line>
                             </svg>
                             <span>Movimientos</span>
+                        </a>
+
+                        <a href="/incidencias" class="{{ Request::is('incidencias*') && !Request::is('incidencias/reporte*') ? 'active' : '' }}">
+                            <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                                <line x1="12" y1="9" x2="12" y2="13"></line>
+                                <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                            </svg>
+                            <span>Incidencias</span>
                         </a>
                     </div>
                 </div>
@@ -1238,7 +1227,7 @@
             }
 
             // 2. Restaurar y configurar estado de categorías colapsables
-            const categories = ['cat-rh', 'cat-ops', 'cat-reports', 'cat-admin'];
+            const categories = ['cat-rh', 'cat-reports', 'cat-admin'];
             categories.forEach(catId => {
                 const wrapper = document.getElementById(catId);
                 if (wrapper) {
