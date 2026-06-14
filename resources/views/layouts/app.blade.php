@@ -306,6 +306,14 @@
         }
         .menu a:not(.active)[href*="/incidencias/reporte"] svg { stroke: #fbbf24; }
 
+        /* Reportes de Vacaciones (Green) */
+        .menu a:not(.active)[href*="/reportes/vacaciones-"] {
+            background: rgba(16, 185, 129, 0.05);
+            border-color: rgba(16, 185, 129, 0.15);
+            color: #34d399;
+        }
+        .menu a:not(.active)[href*="/reportes/vacaciones-"] svg { stroke: #34d399; }
+
         /* Usuarios (Purple) */
         .menu a:not(.active)[href*="/usuarios"] {
             background: rgba(139, 92, 246, 0.05);
@@ -366,6 +374,10 @@
             background: rgba(245, 158, 11, 0.1);
             border-color: rgba(245, 158, 11, 0.3);
         }
+        .menu a:not(.active):hover[href*="/reportes/vacaciones-"] {
+            background: rgba(16, 185, 129, 0.1);
+            border-color: rgba(16, 185, 129, 0.3);
+        }
         .menu a:not(.active):hover[href*="/usuarios"] {
             background: rgba(139, 92, 246, 0.1);
             border-color: rgba(139, 92, 246, 0.3);
@@ -421,6 +433,12 @@
             border-color: #d97706 !important;
             color: white !important;
             box-shadow: 0 4px 12px rgba(245, 158, 11, 0.2) !important;
+        }
+        .menu a.active[href*="/reportes/vacaciones-"] {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+            border-color: #059669 !important;
+            color: white !important;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2) !important;
         }
         .menu a.active[href*="/usuarios"] {
             background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%) !important;
@@ -1055,6 +1073,33 @@
                                 <line x1="6" y1="20" x2="6" y2="14"></line>
                             </svg>
                             <span>Desempeño</span>
+                        </a>
+
+                        <a href="/reportes/vacaciones-general" class="{{ Request::is('reportes/vacaciones-general*') ? 'active' : '' }}">
+                            <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="5"></circle>
+                                <line x1="12" y1="1" x2="12" y2="3"></line>
+                                <line x1="12" y1="21" x2="12" y2="23"></line>
+                                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                                <line x1="1" y1="12" x2="3" y2="12"></line>
+                                <line x1="21" y1="12" x2="23" y2="12"></line>
+                                <line x1="4.22" y1="19.07" x2="5.64" y2="17.66"></line>
+                                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                            </svg>
+                            <span>General Vacaciones</span>
+                        </a>
+
+                        <a href="/reportes/vacaciones-detalle" class="{{ Request::is('reportes/vacaciones-detalle*') ? 'active' : '' }}">
+                            <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                <line x1="16" y1="2" x2="16" y2="6"></line>
+                                <line x1="8" y1="2" x2="8" y2="6"></line>
+                                <line x1="3" y1="10" x2="21" y2="10"></line>
+                                <line x1="12" y1="10" x2="12" y2="20"></line>
+                                <line x1="12" y1="15" x2="18" y2="15"></line>
+                            </svg>
+                            <span>Detalle de Cálculo</span>
                         </a>
                     </div>
                 </div>

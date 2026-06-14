@@ -11,6 +11,7 @@ use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\PersonalController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\PerfilController;
+use App\Http\Controllers\ReporteVacacionController;
 
 // Autenticación pública
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
@@ -68,6 +69,12 @@ Route::middleware(['auth'])->group(function () {
         Route::put('/incidencias/actualizar/{id}', [IncidenciaController::class, 'actualizar']);
         Route::get('/incidencias/reporte', [IncidenciaController::class, 'reporte']);
         Route::get('/incidencias/exportar/excel', [IncidenciaController::class, 'exportarExcel']);
+
+        // Reportes de Vacaciones
+        Route::get('/reportes/vacaciones-general', [ReporteVacacionController::class, 'general']);
+        Route::get('/reportes/vacaciones-general/exportar', [ReporteVacacionController::class, 'generalExportar']);
+        Route::get('/reportes/vacaciones-detalle', [ReporteVacacionController::class, 'detalle']);
+        Route::get('/reportes/vacaciones-detalle/exportar', [ReporteVacacionController::class, 'detalleExportar']);
     });
 
     // Módulos y Acciones Administrativas (Sólo Administradores)
