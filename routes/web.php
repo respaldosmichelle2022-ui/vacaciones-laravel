@@ -111,6 +111,8 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/configuracion/titulo', [SettingController::class, 'guardarTitulo']);
         Route::post('/configuracion/login-image', [SettingController::class, 'guardarImagenLogin']);
         Route::post('/configuracion/login-image/delete', [SettingController::class, 'eliminarImagenLogin']);
+        Route::post('/configuracion/login-logo', [SettingController::class, 'guardarLogoLogin']);
+        Route::post('/configuracion/login-logo/delete', [SettingController::class, 'eliminarLogoLogin']);
         Route::post('/configuracion/backup', [SettingController::class, 'generateBackup']);
         Route::post('/configuracion/restore', [SettingController::class, 'restoreBackup']);
         Route::post('/configuracion/cumpleanos', [SettingController::class, 'guardarBirthdayAlert']);

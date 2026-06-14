@@ -222,18 +222,25 @@
     <div class="login-container">
         @php
             $systemTitle = \App\Models\Setting::getVal('system_title', 'Plataforma Corporativa RH');
+            $loginLogo = \App\Models\Setting::getVal('login_logo_path');
         @endphp
 
-        <!-- Icono de marca profesional -->
-        <div class="brand-icon-wrapper">
-            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                <line x1="16" y1="2" x2="16" y2="6"></line>
-                <line x1="8" y1="2" x2="8" y2="6"></line>
-                <line x1="3" y1="10" x2="21" y2="10"></line>
-                <polyline points="9 16 11 18 15 14"></polyline>
-            </svg>
-        </div>
+        <!-- Icono de marca profesional o logo corporativo personalizado -->
+        @if($loginLogo)
+            <div style="margin: 0 auto 25px auto; display: flex; align-items: center; justify-content: center; height: 68px;">
+                <img src="{{ $loginLogo }}" alt="Logo Corporativo" style="max-width: 180px; max-height: 68px; object-fit: contain; border-radius: 8px;">
+            </div>
+        @else
+            <div class="brand-icon-wrapper">
+                <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                    <polyline points="9 16 11 18 15 14"></polyline>
+                </svg>
+            </div>
+        @endif
 
         <div class="logo-title">{{ $systemTitle }}</div>
         <div class="subtitle">Ingresa tus credenciales para acceder al portal de vacaciones</div>

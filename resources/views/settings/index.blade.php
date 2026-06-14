@@ -103,6 +103,36 @@
             </button>
         </form>
     </div>
+
+    <!-- Login Logo Form -->
+    <div style="background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 25px; margin-top: 30px;">
+        <h3 style="margin-bottom: 15px; font-weight: 600; color: #1e293b;">4b. Imagen de Logueo (Logo Corporativo en Tarjeta)</h3>
+        <p style="color: #64748b; font-size: 13px; margin-bottom: 20px;">Sube el logo de la empresa que reemplazará al círculo con icono en la ventana de inicio de sesión (formatos PNG, JPG, GIF, SVG, máx. 2MB).</p>
+        
+        @if(isset($loginLogoPath) && $loginLogoPath)
+            <div style="background: #f1f5f9; padding: 15px; border-radius: 10px; margin-bottom: 20px; text-align: center; border: 1px solid #cbd5e1; position: relative;">
+                <span style="display: block; font-size: 11px; font-weight: 600; color: #64748b; text-transform: uppercase; margin-bottom: 10px;">Imagen de Logueo Actual</span>
+                <img src="{{ $loginLogoPath }}" alt="Logo Login" style="max-width: 120px; max-height: 120px; object-fit: contain; border-radius: 8px; background: white; padding: 5px; box-shadow: 0 2px 6px rgba(0,0,0,0.05);">
+                
+                <form action="/configuracion/login-logo/delete" method="POST" style="margin-top: 15px;">
+                    @csrf
+                    <button type="submit" class="boton" style="background: #ef4444; margin: 0 auto; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);" onclick="return confirm('¿Seguro que deseas eliminar la imagen de logueo actual?')">
+                        <span>🗑</span> Eliminar Imagen Actual
+                    </button>
+                </form>
+            </div>
+        @endif
+
+        <form action="/configuracion/login-logo" method="POST" enctype="multipart/form-data">
+            @csrf
+            <div class="grupo">
+                <input type="file" name="login_logo" required accept="image/*" style="border: 1px solid #cbd5e1; padding: 10px; border-radius: 8px; width: 100%;">
+            </div>
+            <button type="submit" class="boton">
+                <span>📤</span> Subir Imagen de Logueo
+            </button>
+        </form>
+    </div>
     @endif
 
     <!-- Backup and Restore Section -->

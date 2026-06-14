@@ -24,8 +24,9 @@ class SettingController extends Controller
         $logoY = Setting::getVal('logo_y', '20px');
         $systemTitle = Setting::getVal('system_title', 'Plataforma Corporativa RH');
         $loginImagePath = Setting::getVal('login_image_path');
+        $loginLogoPath = Setting::getVal('login_logo_path');
 
-        return view('settings.index', compact('logoPath', 'logoPosition', 'logoX', 'logoY', 'systemTitle', 'loginImagePath'));
+        return view('settings.index', compact('logoPath', 'logoPosition', 'logoX', 'logoY', 'systemTitle', 'loginImagePath', 'loginLogoPath'));
     }
 
     public function guardarLogo(Request $request)
@@ -115,6 +116,37 @@ class SettingController extends Controller
         Setting::setVal('login_image_path', null);
 
         return back()->with('success', 'Imagen de inicio de sesión eliminada correctamente.');
+    }
+
+    public function guardarLogoLogin(Request $request)
+    {
+        $this->checkAdmin();
+        $request->validate([
+            'login_logo' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        ]);
+
+        if ($request->hasFile('login_logo')) {
+            $image = $request->file('login_logo');
+            
+            // Convertir la imagen a Base64 para guardarla de forma persistente
+            $imageData = base64_encode(file_get_contents($image->getRealPath()));
+            $mimeType = $image->getMimeType();
+            $base64 = 'data:' . $mimeType . ';base64,' . $imageData;
+
+            Setting::setVal('login_logo_path', $base64);
+
+            return back()->with('success', 'Imagen de logueo subida correctamente.');
+        }
+
+        return back()->with('error', 'Error al subir la imagen de logueo.');
+    }
+
+    public function eliminarLogoLogin()
+    {
+        $this->checkAdmin();
+        Setting::setVal('login_logo_path', null);
+
+        return back()->with('success', 'Imagen de logueo eliminada correctamente.');
     }
 
     public function generateBackup(Request $request)
