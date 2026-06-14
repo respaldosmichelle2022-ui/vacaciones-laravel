@@ -975,14 +975,6 @@
                             </svg>
                             <span>Dashboard</span>
                         </a>
-
-                        <a href="/mi-cuenta" class="{{ Request::is('mi-cuenta*') ? 'active' : '' }}">
-                            <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                                <circle cx="12" cy="7" r="4"></circle>
-                            </svg>
-                            <span>Mi Cuenta</span>
-                        </a>
                         
                         @if(!$user->esAdmin() && !$user->esSupervisor())
                             <a href="/mi-sitio" class="{{ Request::is('mi-sitio*') ? 'active' : '' }}">
@@ -1104,7 +1096,6 @@
                     </div>
                 </div>
 
-                @if($user->esAdmin() || $user->esSupervisor())
                     <!-- Administración (Colapsable) -->
                     <div class="menu-category-wrapper" id="cat-admin">
                         <div class="menu-category-header" onclick="toggleCategory('cat-admin')">
@@ -1117,6 +1108,14 @@
                             </svg>
                         </div>
                         <div class="menu-category-content">
+                            <a href="/mi-cuenta" class="{{ Request::is('mi-cuenta*') ? 'active' : '' }}">
+                                <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                    <circle cx="12" cy="7" r="4"></circle>
+                                </svg>
+                                <span>Mi Cuenta</span>
+                            </a>
+
                             @if($user->esAdmin())
                             <a href="/usuarios" class="{{ Request::is('usuarios*') ? 'active' : '' }}">
                                 <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -1127,6 +1126,7 @@
                             </a>
                             @endif
                             
+                            @if($user->esAdmin() || $user->esSupervisor())
                             <a href="/configuracion" class="{{ Request::is('configuracion') ? 'active' : '' }}">
                                 <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
                                     <circle cx="12" cy="12" r="3"></circle>
@@ -1134,6 +1134,7 @@
                                 </svg>
                                 <span>Configuración</span>
                             </a>
+                            @endif
 
                             @if($user->esAdmin())
                             <a href="/configuracion/festivos" class="{{ Request::is('configuracion/festivos*') ? 'active' : '' }}">
@@ -1149,7 +1150,6 @@
                             @endif
                         </div>
                     </div>
-                @endif
             @endif
         </div>
     </div>
