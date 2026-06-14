@@ -305,6 +305,14 @@
         }
         .menu a:not(.active)[href*="/usuarios"] svg { stroke: #c084fc; }
 
+        /* Mi Cuenta (Indigo) */
+        .menu a:not(.active)[href*="/mi-cuenta"] {
+            background: rgba(99, 102, 241, 0.05);
+            border-color: rgba(99, 102, 241, 0.15);
+            color: #818cf8;
+        }
+        .menu a:not(.active)[href*="/mi-cuenta"] svg { stroke: #818cf8; }
+
         /* Configuracion (Gray/Slate) */
         .menu a:not(.active)[href*="/configuracion"] {
             background: rgba(100, 116, 139, 0.05);
@@ -352,6 +360,10 @@
         .menu a:not(.active):hover[href*="/usuarios"] {
             background: rgba(139, 92, 246, 0.1);
             border-color: rgba(139, 92, 246, 0.3);
+        }
+        .menu a:not(.active):hover[href*="/mi-cuenta"] {
+            background: rgba(99, 102, 241, 0.1);
+            border-color: rgba(99, 102, 241, 0.3);
         }
         .menu a:not(.active):hover[href*="/configuracion"] {
             background: rgba(100, 116, 139, 0.1);
@@ -406,6 +418,12 @@
             border-color: #6d28d9 !important;
             color: white !important;
             box-shadow: 0 4px 12px rgba(139, 92, 246, 0.2) !important;
+        }
+        .menu a.active[href*="/mi-cuenta"] {
+            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%) !important;
+            border-color: #4f46e5 !important;
+            color: white !important;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2) !important;
         }
         .menu a.active[href*="/configuracion"] {
             background: linear-gradient(135deg, #64748b 0%, #475569 100%) !important;
@@ -930,6 +948,14 @@
                             </svg>
                             <span>Dashboard</span>
                         </a>
+
+                        <a href="/mi-cuenta" class="{{ Request::is('mi-cuenta*') ? 'active' : '' }}">
+                            <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="12" cy="7" r="4"></circle>
+                            </svg>
+                            <span>Mi Cuenta</span>
+                        </a>
                         
                         @if(!$user->esAdmin() && !$user->esSupervisor())
                             <a href="/mi-sitio" class="{{ Request::is('mi-sitio*') ? 'active' : '' }}">
@@ -1037,6 +1063,7 @@
                             </svg>
                         </div>
                         <div class="menu-category-content">
+                            @if($user->esAdmin())
                             <a href="/usuarios" class="{{ Request::is('usuarios*') ? 'active' : '' }}">
                                 <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
                                     <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
@@ -1044,6 +1071,7 @@
                                 </svg>
                                 <span>Usuarios y Roles</span>
                             </a>
+                            @endif
                             
                             <a href="/configuracion" class="{{ Request::is('configuracion') ? 'active' : '' }}">
                                 <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">

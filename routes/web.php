@@ -10,6 +10,7 @@ use App\Http\Controllers\IncidenciaController;
 use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\PersonalController;
 use App\Http\Controllers\SettingController;
+use App\Http\Controllers\PerfilController;
 
 // Autenticación pública
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
@@ -17,8 +18,11 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 // Portal Protegido
-// Portal Protegido
 Route::middleware(['auth'])->group(function () {
+    
+    // Mi Cuenta (Autoservicio de perfil para cualquier usuario)
+    Route::get('/mi-cuenta', [PerfilController::class, 'index']);
+    Route::put('/mi-cuenta/actualizar', [PerfilController::class, 'actualizar']);
     
     // Módulos Generales (Accesibles por Empleados y Administradores)
     Route::middleware(['restringir.solo_lectura'])->group(function () {
