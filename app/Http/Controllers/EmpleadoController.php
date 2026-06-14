@@ -457,6 +457,7 @@ class EmpleadoController extends Controller
             'nombre_completo' => "{$empleado->nombre} {$empleado->apellido_paterno} {$empleado->apellido_materno}",
             'fecha_ingreso' => \Carbon\Carbon::parse($empleado->fecha_ingreso)->format('d/m/Y'),
             'fecha_nacimiento' => $empleado->fecha_nacimiento ? \Carbon\Carbon::parse($empleado->fecha_nacimiento)->format('d/m/Y') : 'No registrada',
+            'edad' => $empleado->fecha_nacimiento ? \Carbon\Carbon::parse($empleado->fecha_nacimiento)->age : null,
             'anos_cumplidos' => \Carbon\Carbon::parse($empleado->fecha_ingreso)->age,
             'saldos' => $empleado->saldosVacaciones->map(function($saldo) use ($empleado) {
                 $tomadas = $empleado->movimientosVacaciones->where('periodo', $saldo->periodo)->sum('dias');
