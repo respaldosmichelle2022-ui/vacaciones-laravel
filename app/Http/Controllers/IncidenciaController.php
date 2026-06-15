@@ -12,13 +12,25 @@ class IncidenciaController extends Controller
     {
         $buscar = $request->buscar;
         $tipo = $request->tipo;
-        $sitio = auth()->user()->sitio;
+        $sitioFiltro = $request->sitio;
+        $userSitio = auth()->user()->sitio;
+
+        // Obtener la lista de sitios únicos para el filtro
+        $sitiosQuery = Empleado::select('sitio')->distinct();
+        if ($userSitio) {
+            $sitiosQuery->where('sitio', $userSitio);
+        }
+        $sitios = $sitiosQuery->pluck('sitio')->filter()->values();
 
         $query = Incidencia::with('empleado');
 
-        if ($sitio) {
-            $query->whereHas('empleado', function($q) use ($sitio) {
-                $q->where('sitio', $sitio);
+        if ($userSitio) {
+            $query->whereHas('empleado', function($q) use ($userSitio) {
+                $q->where('sitio', $userSitio);
+            });
+        } elseif ($sitioFiltro) {
+            $query->whereHas('empleado', function($q) use ($sitioFiltro) {
+                $q->where('sitio', $sitioFiltro);
             });
         }
 
@@ -39,7 +51,7 @@ class IncidenciaController extends Controller
 
         $incidencias = $query->orderBy('fecha', 'desc')->get();
 
-        return view('incidencias.index', compact('incidencias', 'buscar', 'tipo'));
+        return view('incidencias.index', compact('incidencias', 'buscar', 'tipo', 'sitios', 'sitioFiltro'));
     }
 
     public function crear()

@@ -24,15 +24,27 @@
 </div>
 
 <!-- Filtros y Búsqueda -->
-<form action="/incidencias" method="GET" style="display: flex; gap: 15px; margin-bottom: 25px; align-items: flex-end; flex-wrap: wrap;">
+<div style="display: flex; gap: 15px; margin-bottom: 25px; align-items: flex-end; flex-wrap: wrap;">
     <div style="flex: 1; min-width: 200px;">
         <label for="buscar" style="display: block; font-size: 13px; font-weight: 600; color: #475569; margin-bottom: 6px;">Buscar Empleado</label>
-        <input type="text" name="buscar" id="buscar" placeholder="Número, nombre o apellido..." value="{{ $buscar }}" style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 8px;">
+        <input type="text" id="buscar" placeholder="Buscar por número o nombre completo..." value="{{ $buscar }}" style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 8px;">
     </div>
+
+    @if(count($sitios) > 1 || !auth()->user()->sitio)
+    <div style="width: 180px;">
+        <label for="sitio" style="display: block; font-size: 13px; font-weight: 600; color: #475569; margin-bottom: 6px;">Filtrar Sitio</label>
+        <select id="sitio" style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 8px;">
+            <option value="">Todos los sitios</option>
+            @foreach($sitios as $s)
+                <option value="{{ $s }}" {{ $sitioFiltro == $s ? 'selected' : '' }}>{{ $s }}</option>
+            @endforeach
+        </select>
+    </div>
+    @endif
     
     <div style="width: 180px;">
         <label for="tipo" style="display: block; font-size: 13px; font-weight: 600; color: #475569; margin-bottom: 6px;">Filtrar Tipo</label>
-        <select name="tipo" id="tipo" style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 8px;">
+        <select id="tipo" style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 8px;">
             <option value="">Todos los tipos</option>
             <option value="falta" {{ $tipo == 'falta' ? 'selected' : '' }}>Falta</option>
             <option value="permiso" {{ $tipo == 'permiso' ? 'selected' : '' }}>Permiso</option>
@@ -43,19 +55,17 @@
     </div>
 
     <div>
-        <button type="submit" class="boton" style="padding: 11px 20px;">
-            Filtrar
-        </button>
         <a href="/incidencias" class="boton-volver" style="margin-bottom: 0; padding: 11px 20px; display: inline-flex; height: auto;">
-            Limpiar
+            Limpiar Filtros
         </a>
     </div>
-</form>
+</div>
 
 <table>
     <thead>
         <tr>
             <th>Empleado</th>
+            <th>Sitio</th>
             <th>Tipo</th>
             <th>Fecha</th>
             <th>Observaciones</th>
@@ -64,10 +74,15 @@
     </thead>
     <tbody>
         @forelse($incidencias as $inc)
-            <tr>
+            <tr class="incidencia-row"
+                data-numero-empleado="{{ $inc->empleado->numero_empleado }}"
+                data-nombre-empleado="{{ $inc->empleado->nombre }} {{ $inc->empleado->apellido_paterno }} {{ $inc->empleado->apellido_materno }}"
+                data-sitio="{{ $inc->empleado->sitio }}"
+                data-tipo="{{ $inc->tipo }}">
                 <td style="font-weight: 600;">
-                    #{{ $inc->empleado->numero_empleado }} - {{ $inc->empleado->nombre }} {{ $inc->empleado->apellido_paterno }}
+                    #{{ $inc->empleado->numero_empleado }} - {{ $inc->empleado->nombre }} {{ $inc->empleado->apellido_paterno }} {{ $inc->empleado->apellido_materno }}
                 </td>
+                <td style="font-weight: 500; color: #475569;">{{ $inc->empleado->sitio }}</td>
                 <td>
                     <span class="badge-estado" style="padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; text-transform: uppercase;
                         @if($inc->tipo == 'falta') background: #fee2e2; color: #991b1b;
@@ -109,8 +124,8 @@
                 </td>
             </tr>
         @empty
-            <tr>
-                <td colspan="5" style="text-align: center; color: #94a3b8; padding: 30px;">
+            <tr id="empty-state-row">
+                <td colspan="6" style="text-align: center; color: #94a3b8; padding: 30px;">
                     No se encontraron incidencias registradas.
                 </td>
             </tr>
@@ -118,4 +133,76 @@
     </tbody>
 </table>
 
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const inputBuscar = document.getElementById('buscar');
+        const selectTipo = document.getElementById('tipo');
+        const selectSitio = document.getElementById('sitio');
+
+        function filtrarTabla() {
+            const buscarVal = inputBuscar.value.toLowerCase().trim();
+            const tipoVal = selectTipo.value;
+            const sitioVal = selectSitio ? selectSitio.value : '';
+
+            const rows = document.querySelectorAll('.incidencia-row');
+            let visibleRowsCount = 0;
+
+            rows.forEach(row => {
+                const numEmp = row.getAttribute('data-numero-empleado') || '';
+                const nomEmp = row.getAttribute('data-nombre-empleado').toLowerCase() || '';
+                const tipoEmp = row.getAttribute('data-tipo') || '';
+                const sitioEmp = row.getAttribute('data-sitio') || '';
+
+                const matchesBuscar = numEmp.includes(buscarVal) || nomEmp.includes(buscarVal);
+                const matchesTipo = tipoVal === '' || tipoEmp === tipoVal;
+                const matchesSitio = sitioVal === '' || sitioEmp === sitioVal;
+
+                if (matchesBuscar && matchesTipo && matchesSitio) {
+                    row.style.display = '';
+                    visibleRowsCount++;
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+
+            // Control de fila vacía
+            let emptyRow = document.getElementById('no-results-row');
+            const defaultEmptyRow = document.getElementById('empty-state-row');
+
+            if (visibleRowsCount === 0) {
+                if (defaultEmptyRow) {
+                    defaultEmptyRow.style.display = '';
+                } else {
+                    if (!emptyRow) {
+                        const tbody = document.querySelector('table tbody');
+                        emptyRow = document.createElement('tr');
+                        emptyRow.id = 'no-results-row';
+                        emptyRow.innerHTML = `
+                            <td colspan="6" style="text-align: center; color: #94a3b8; padding: 30px;">
+                                No se encontraron incidencias registradas con los filtros seleccionados.
+                            </td>
+                        `;
+                        tbody.appendChild(emptyRow);
+                    } else {
+                        emptyRow.style.display = '';
+                    }
+                }
+            } else {
+                if (defaultEmptyRow) {
+                    defaultEmptyRow.style.display = 'none';
+                }
+                if (emptyRow) {
+                    emptyRow.style.display = 'none';
+                }
+            }
+        }
+
+        if (inputBuscar) inputBuscar.addEventListener('input', filtrarTabla);
+        if (selectTipo) selectTipo.addEventListener('change', filtrarTabla);
+        if (selectSitio) selectSitio.addEventListener('change', filtrarTabla);
+
+        // Ejecutar inicialmente para aplicar filtros precargados
+        filtrarTabla();
+    });
+</script>
 @endsection
