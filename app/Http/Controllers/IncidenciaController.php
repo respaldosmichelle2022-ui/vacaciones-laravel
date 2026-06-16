@@ -13,6 +13,7 @@ class IncidenciaController extends Controller
         $buscar = $request->buscar;
         $tipo = $request->tipo;
         $sitioFiltro = $request->sitio;
+        $mesFiltro = $request->mes;
         $userSitio = auth()->user()->sitio;
 
         // Obtener la lista de sitios únicos para el filtro
@@ -49,9 +50,13 @@ class IncidenciaController extends Controller
             $query->where('tipo', $tipo);
         }
 
+        if ($mesFiltro) {
+            $query->whereMonth('fecha', $mesFiltro);
+        }
+
         $incidencias = $query->orderBy('fecha', 'desc')->get();
 
-        return view('incidencias.index', compact('incidencias', 'buscar', 'tipo', 'sitios', 'sitioFiltro'));
+        return view('incidencias.index', compact('incidencias', 'buscar', 'tipo', 'sitios', 'sitioFiltro', 'mesFiltro'));
     }
 
     public function crear()

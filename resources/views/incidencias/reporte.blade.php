@@ -48,10 +48,10 @@
             <!-- Filtro Dinámico por Sitio (JS) -->
             <div class="grupo" style="margin-bottom: 0;">
                 <label style="font-size: 12px; font-weight: 600; color: #64748b;">Sitio</label>
-                <select id="filtro-sitio" style="padding: 10px; font-size: 13px;">
+                <select id="filtro-sitio" name="sitio" style="padding: 10px; font-size: 13px;">
                     <option value="">-- Todos los Sitios --</option>
                     @foreach($sitios as $s)
-                        <option value="{{ $s }}">{{ $s }}</option>
+                        <option value="{{ $s }}" {{ request('sitio') == $s ? 'selected' : '' }}>{{ $s }}</option>
                     @endforeach
                 </select>
             </div>
@@ -59,7 +59,7 @@
             <!-- Búsqueda Dinámica por Empleado (JS Autocomplete) -->
             <div class="grupo" style="margin-bottom: 0; position: relative;">
                 <label style="font-size: 12px; font-weight: 600; color: #64748b;">Buscar Empleado</label>
-                <input type="text" id="buscar-empleado" placeholder="Escribe nombre o número..." autocomplete="off" style="padding: 10px; font-size: 13px; width: 100%; border: 1px solid #cbd5e1; border-radius: 10px; outline: none;">
+                <input type="text" id="buscar-empleado" name="buscar_empleado" value="{{ request('buscar_empleado') }}" placeholder="Escribe nombre o número..." autocomplete="off" style="padding: 10px; font-size: 13px; width: 100%; border: 1px solid #cbd5e1; border-radius: 10px; outline: none;">
                 <div id="buscar-empleado-autocomplete" style="display: none; position: absolute; top: 100%; left: 0; width: 100%; background: white; border: 1px solid #cbd5e1; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); z-index: 999; max-height: 200px; overflow-y: auto; margin-top: 5px;"></div>
             </div>
 

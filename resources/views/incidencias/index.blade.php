@@ -54,6 +54,25 @@
         </select>
     </div>
 
+    <div style="width: 180px;">
+        <label for="mes" style="display: block; font-size: 13px; font-weight: 600; color: #475569; margin-bottom: 6px;">Filtrar Mes</label>
+        <select id="mes" style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 8px;">
+            <option value="">Todos los meses</option>
+            <option value="1" {{ (isset($mesFiltro) && $mesFiltro == 1) ? 'selected' : '' }}>Enero</option>
+            <option value="2" {{ (isset($mesFiltro) && $mesFiltro == 2) ? 'selected' : '' }}>Febrero</option>
+            <option value="3" {{ (isset($mesFiltro) && $mesFiltro == 3) ? 'selected' : '' }}>Marzo</option>
+            <option value="4" {{ (isset($mesFiltro) && $mesFiltro == 4) ? 'selected' : '' }}>Abril</option>
+            <option value="5" {{ (isset($mesFiltro) && $mesFiltro == 5) ? 'selected' : '' }}>Mayo</option>
+            <option value="6" {{ (isset($mesFiltro) && $mesFiltro == 6) ? 'selected' : '' }}>Junio</option>
+            <option value="7" {{ (isset($mesFiltro) && $mesFiltro == 7) ? 'selected' : '' }}>Julio</option>
+            <option value="8" {{ (isset($mesFiltro) && $mesFiltro == 8) ? 'selected' : '' }}>Agosto</option>
+            <option value="9" {{ (isset($mesFiltro) && $mesFiltro == 9) ? 'selected' : '' }}>Septiembre</option>
+            <option value="10" {{ (isset($mesFiltro) && $mesFiltro == 10) ? 'selected' : '' }}>Octubre</option>
+            <option value="11" {{ (isset($mesFiltro) && $mesFiltro == 11) ? 'selected' : '' }}>Noviembre</option>
+            <option value="12" {{ (isset($mesFiltro) && $mesFiltro == 12) ? 'selected' : '' }}>Diciembre</option>
+        </select>
+    </div>
+
     <div>
         <a href="/incidencias" class="boton-volver" style="margin-bottom: 0; padding: 11px 20px; display: inline-flex; height: auto;">
             Limpiar Filtros
@@ -78,7 +97,8 @@
                 data-numero-empleado="{{ $inc->empleado->numero_empleado }}"
                 data-nombre-empleado="{{ $inc->empleado->nombre }} {{ $inc->empleado->apellido_paterno }} {{ $inc->empleado->apellido_materno }}"
                 data-sitio="{{ $inc->empleado->sitio }}"
-                data-tipo="{{ $inc->tipo }}">
+                data-tipo="{{ $inc->tipo }}"
+                data-mes="{{ \Carbon\Carbon::parse($inc->fecha)->month }}">
                 <td style="font-weight: 600;">
                     #{{ $inc->empleado->numero_empleado }} - {{ $inc->empleado->nombre }} {{ $inc->empleado->apellido_paterno }} {{ $inc->empleado->apellido_materno }}
                 </td>
@@ -138,11 +158,13 @@
         const inputBuscar = document.getElementById('buscar');
         const selectTipo = document.getElementById('tipo');
         const selectSitio = document.getElementById('sitio');
+        const selectMes = document.getElementById('mes');
 
         function filtrarTabla() {
             const buscarVal = inputBuscar.value.toLowerCase().trim();
             const tipoVal = selectTipo.value;
             const sitioVal = selectSitio ? selectSitio.value : '';
+            const mesVal = selectMes ? selectMes.value : '';
 
             const rows = document.querySelectorAll('.incidencia-row');
             let visibleRowsCount = 0;
@@ -152,12 +174,14 @@
                 const nomEmp = row.getAttribute('data-nombre-empleado').toLowerCase() || '';
                 const tipoEmp = row.getAttribute('data-tipo') || '';
                 const sitioEmp = row.getAttribute('data-sitio') || '';
+                const mesEmp = row.getAttribute('data-mes') || '';
 
                 const matchesBuscar = numEmp.includes(buscarVal) || nomEmp.includes(buscarVal);
                 const matchesTipo = tipoVal === '' || tipoEmp === tipoVal;
                 const matchesSitio = sitioVal === '' || sitioEmp === sitioVal;
+                const matchesMes = mesVal === '' || mesEmp === mesVal;
 
-                if (matchesBuscar && matchesTipo && matchesSitio) {
+                if (matchesBuscar && matchesTipo && matchesSitio && matchesMes) {
                     row.style.display = '';
                     visibleRowsCount++;
                 } else {
@@ -200,6 +224,7 @@
         if (inputBuscar) inputBuscar.addEventListener('input', filtrarTabla);
         if (selectTipo) selectTipo.addEventListener('change', filtrarTabla);
         if (selectSitio) selectSitio.addEventListener('change', filtrarTabla);
+        if (selectMes) selectMes.addEventListener('change', filtrarTabla);
 
         // Ejecutar inicialmente para aplicar filtros precargados
         filtrarTabla();
