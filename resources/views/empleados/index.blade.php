@@ -153,6 +153,68 @@
     .btn-import-submit:hover {
         background: #2563eb;
     }
+
+    /* Animation: Warehouse (Almacen) */
+    @keyframes boxOpenClose {
+        0%, 100% { transform: rotate(0deg) translateY(0); }
+        50% { transform: rotate(-22deg) translateY(-6px); }
+    }
+
+    /* Animation: Office (Oficina) */
+    @keyframes typing {
+        0% { transform: translateY(0); }
+        100% { transform: translateY(-3px); }
+    }
+    @keyframes steam-rise {
+        0% { stroke-dasharray: 0, 20; stroke-dashoffset: 0; opacity: 0; transform: translateY(0); }
+        50% { opacity: 0.6; }
+        100% { stroke-dasharray: 20, 20; stroke-dashoffset: -20; opacity: 0; transform: translateY(-8px); }
+    }
+
+    /* Animation: Retail (Comercio) */
+    @keyframes accessoryFloat {
+        0% { transform: translateY(0); }
+        100% { transform: translateY(-5px); }
+    }
+    @keyframes sparkle-twinkle {
+        0%, 100% { opacity: 0.2; transform: scale(0.8); }
+        50% { opacity: 1; transform: scale(1.2); }
+    }
+
+    /* Operational Cards Layout */
+    .operational-panel {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 20px;
+        margin-bottom: 30px;
+    }
+    .operational-card {
+        background: white;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 20px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.01);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .operational-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 15px rgba(0,0,0,0.04);
+    }
+    .operational-card-text h4 {
+        font-size: 14px;
+        font-weight: 700;
+        color: #0f172a;
+        margin-bottom: 4px;
+    }
+    .operational-card-text p {
+        font-size: 11.5px;
+        color: #64748b;
+        margin: 0;
+        line-height: 1.4;
+    }
 </style>
 
 @if(session('import_warnings'))
@@ -203,6 +265,66 @@
             <span>+</span> Agregar Empleado
         </a>
         @endif
+    </div>
+</div>
+
+<!-- Panel de Áreas Operativas y Funciones -->
+<div class="operational-panel no-print">
+    <!-- Card 1: Almacén -->
+    <div class="operational-card">
+        <svg viewBox="0 0 100 100" style="width: 65px; height: 65px; flex-shrink: 0;">
+            <circle cx="50" cy="35" r="14" fill="#94a3b8" />
+            <path d="M32 58 C32 44, 68 44, 68 58 Z" fill="#94a3b8" />
+            <rect x="30" y="62" width="40" height="26" fill="#d97706" rx="2" />
+            <g style="transform-origin: 30px 62px; animation: boxOpenClose 2.5s ease-in-out infinite;">
+                <rect x="26" y="55" width="48" height="8" fill="#b45309" rx="1" />
+            </g>
+        </svg>
+        <div class="operational-card-text">
+            <h4>Logística y Almacén</h4>
+            <p>Control de inventario, recepción de insumos y preparación de paquetes.</p>
+        </div>
+    </div>
+
+    <!-- Card 2: Oficina -->
+    <div class="operational-card">
+        <svg viewBox="0 0 100 100" style="width: 65px; height: 65px; flex-shrink: 0;">
+            <circle cx="45" cy="38" r="12" fill="#3b82f6" />
+            <path d="M25 63 C25 48, 65 48, 65 63 Z" fill="#3b82f6" />
+            <rect x="62" y="38" width="4" height="22" fill="#64748b" rx="1" style="transform: skewY(-10deg);" />
+            <rect x="52" y="52" width="16" height="3" fill="#475569" />
+            <circle cx="49" cy="54" r="2.5" fill="#cbd5e1" style="animation: typing 0.4s ease-in-out infinite alternate;" />
+            <circle cx="53" cy="53" r="2.5" fill="#cbd5e1" style="animation: typing 0.4s ease-in-out infinite alternate-reverse;" />
+            <rect x="18" y="56" width="8" height="10" fill="#ef4444" rx="1" />
+            <path d="M26 58 H29 V62 H26" fill="none" stroke="#ef4444" stroke-width="1.5" />
+            <path d="M20 52 Q18 48 20 44 T20 36" fill="none" stroke="#94a3b8" stroke-width="1.5" stroke-linecap="round" style="animation: steam-rise 2s ease-in-out infinite;" />
+        </svg>
+        <div class="operational-card-text">
+            <h4>Administración y Oficina</h4>
+            <p>Gestión corporativa, atención al cliente y facturación del negocio.</p>
+        </div>
+    </div>
+
+    <!-- Card 3: Comercial -->
+    <div class="operational-card">
+        <svg viewBox="0 0 100 100" style="width: 65px; height: 65px; flex-shrink: 0;">
+            <circle cx="50" cy="35" r="12" fill="#ec4899" />
+            <path d="M34 60 C34 46, 66 46, 66 60 Z" fill="#ec4899" />
+            <g style="animation: accessoryFloat 2s ease-in-out infinite alternate; transform-origin: center;">
+                <path d="M42 60 H58 V74 H42 Z" fill="#f59e0b" rx="2" />
+                <path d="M46 60 C46 52, 54 52, 54 60" fill="none" stroke="#d97706" stroke-width="1.8" />
+            </g>
+            <g style="animation: sparkle-twinkle 1.5s ease-in-out infinite; transform-origin: 25px 25px;">
+                <path d="M25 23 L27 25 L25 27 L23 25 Z" fill="#fbbf24" />
+            </g>
+            <g style="animation: sparkle-twinkle 1.5s ease-in-out infinite 0.7s; transform-origin: 75px 30px;">
+                <path d="M75 28 L77 30 L75 32 L73 30 Z" fill="#fbbf24" />
+            </g>
+        </svg>
+        <div class="operational-card-text">
+            <h4>Comercio y Ventas</h4>
+            <p>Exhibición de accesorios y calzado, atención directa y ventas.</p>
+        </div>
     </div>
 </div>
 
