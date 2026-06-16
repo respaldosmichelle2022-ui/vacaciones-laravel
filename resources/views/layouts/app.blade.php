@@ -7,6 +7,14 @@
     <title>{{ \App\Models\Setting::getVal('system_title', 'Plataforma Corporativa RH') }} - Vacaciones e Incidencias</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
     
+    <!-- PWA Meta Tags -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#0f172a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Vacaciones RH">
+    <link rel="apple-touch-icon" href="/logo-placeholder.png">
+    
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -912,6 +920,84 @@
                 display: inline !important;
             }
         }
+
+        /* Mobile Responsive Enhancements */
+        @media (max-width: 992px) {
+            .topbar {
+                padding: 12px 16px;
+                margin-bottom: 20px;
+            }
+            .user-info {
+                display: none !important;
+            }
+            .btn-logout {
+                padding: 6px 12px;
+                font-size: 12px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .cards {
+                grid-template-columns: 1fr !important;
+            }
+            /* Make action bars with inline flex styles stack vertically on mobile */
+            .contenido > div[style*="display:flex"],
+            .card > div[style*="display:flex"],
+            .card > form > div[style*="display:flex"] {
+                flex-direction: column !important;
+                align-items: stretch !important;
+                gap: 15px !important;
+            }
+            .contenido > div[style*="display:flex"] > div,
+            .card > div[style*="display:flex"] > div,
+            .card > form > div[style*="display:flex"] > div {
+                flex-direction: column !important;
+                align-items: stretch !important;
+                width: 100% !important;
+                gap: 8px !important;
+            }
+            .contenido > div[style*="display:flex"] input,
+            .card > div[style*="display:flex"] input,
+            .card > form > div[style*="display:flex"] input {
+                width: 100% !important;
+            }
+            .boton {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .contenido {
+                padding: 10px !important;
+            }
+            .card {
+                padding: 15px !important;
+                border-radius: 12px !important;
+            }
+            .topbar {
+                padding: 10px !important;
+                border-radius: 12px !important;
+                margin-bottom: 15px !important;
+            }
+            .topbar-title {
+                font-size: 14px !important;
+            }
+        }
+
+        /* Responsive Tables Wrapper */
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            margin-top: 15px;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+        }
+        .table-responsive table {
+            margin-top: 0 !important;
+            border: none !important;
+        }
     </style>
 </head>
 
@@ -1423,6 +1509,25 @@
                     tr.classList.add('selected-row');
                 }
             });
+
+            // 5. Envoltura automática de tablas para visualización móvil responsiva
+            document.querySelectorAll('table').forEach(table => {
+                if (!table.parentElement.classList.contains('table-responsive')) {
+                    const wrapper = document.createElement('div');
+                    wrapper.className = 'table-responsive';
+                    table.parentNode.insertBefore(wrapper, table);
+                    wrapper.appendChild(table);
+                }
+            });
+
+            // 6. Registro de Service Worker para PWA
+            if ('serviceWorker' in navigator) {
+                window.addEventListener('load', () => {
+                    navigator.serviceWorker.register('/sw.js')
+                        .then(reg => console.log('Service Worker de Vacaciones registrado con éxito:', reg.scope))
+                        .catch(err => console.error('Error al registrar Service Worker:', err));
+                });
+            }
         });
     </script>
 

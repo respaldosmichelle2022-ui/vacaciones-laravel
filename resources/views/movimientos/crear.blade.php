@@ -1,25 +1,41 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-
     <meta charset="UTF-8">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Asignar vacaciones</title>
+    
+    <!-- PWA support on standalone forms -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#0f172a">
 
     <style>
+        * {
+            box-sizing: border-box;
+        }
 
         body{
             font-family: Arial;
             background:#f2f2f2;
+            margin: 0;
+            padding: 10px;
         }
 
         .contenedor{
+            max-width: 700px;
+            width: 100%;
+            margin: 20px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
 
-            width:700px;
-            margin:40px auto;
-            background:white;
-            padding:40px;
-            border-radius:10px;
+        @media (max-width: 768px) {
+            .contenedor {
+                margin: 10px auto;
+                padding: 20px;
+            }
         }
 
         h1{
