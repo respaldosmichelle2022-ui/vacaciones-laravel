@@ -1,3 +1,10 @@
+@php
+    $logoPath = \App\Models\Setting::getVal('logo_path', '/logo-placeholder.png');
+    $logoPosition = \App\Models\Setting::getVal('logo_position', 'sidebar_top');
+    $logoX = \App\Models\Setting::getVal('logo_x', '20px');
+    $logoY = \App\Models\Setting::getVal('logo_y', '20px');
+    $user = Auth::user();
+@endphp
 <!DOCTYPE html>
 <html lang="es">
 
@@ -13,7 +20,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Vacaciones RH">
-    <link rel="apple-touch-icon" href="/logo-placeholder.png">
+    <link rel="apple-touch-icon" href="{{ $logoPath }}">
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1002,14 +1009,6 @@
 </head>
 
 <body>
-
-    @php
-        $logoPath = \App\Models\Setting::getVal('logo_path', '/logo-placeholder.png');
-        $logoPosition = \App\Models\Setting::getVal('logo_position', 'sidebar_top');
-        $logoX = \App\Models\Setting::getVal('logo_x', '20px');
-        $logoY = \App\Models\Setting::getVal('logo_y', '20px');
-        $user = Auth::user();
-    @endphp
 
     <!-- Logo Arrastrable Floating -->
     @if($logoPosition === 'draggable')
