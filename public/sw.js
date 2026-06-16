@@ -1,8 +1,8 @@
-const CACHE_NAME = 'vacaciones-rh-v1';
+const CACHE_NAME = 'vacaciones-rh-v2';
 const ASSETS = [
   '/',
   '/manifest.json',
-  '/logo-placeholder.png'
+  '/uploads/logos/logo_1780695317.png'
 ];
 
 // Instalar Service Worker
