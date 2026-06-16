@@ -96,6 +96,10 @@
             border-radius:5px;
         }
 
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
 
 </head>
@@ -439,6 +443,27 @@ function calcularPrimaVacacional() {
 }
 
 cargarPeriodos();
+
+// Animación de "Cargando..." al enviar formulario
+document.querySelector('form').addEventListener('submit', function(e) {
+    const submitBtn = this.querySelector('button[type="submit"]');
+    if (submitBtn) {
+        if (submitBtn.classList.contains('is-loading')) {
+            e.preventDefault();
+            return;
+        }
+        submitBtn.classList.add('is-loading');
+        submitBtn.innerHTML = `
+            <svg viewBox="0 0 50 50" style="animation: spin 1s linear infinite; width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 5; stroke-linecap: round; margin-right: 8px; display: inline-block; vertical-align: middle;">
+                <circle cx="25" cy="25" r="20" stroke-dasharray="80, 200" stroke-dashoffset="0"></circle>
+            </svg>
+            Procesando...
+        `;
+        setTimeout(() => {
+            submitBtn.disabled = true;
+        }, 50);
+    }
+});
 
 </script>
 </html>

@@ -102,6 +102,19 @@
     <!-- Modal de Cumpleaños -->
     <div id="modalCumpleanos" class="modal" style="display: flex; position: fixed; z-index: 1050; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); justify-content: center; align-items: center;">
         <div style="background-color: white; border-radius: 16px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); border: 1px solid #e2e8f0; width: 90%; max-width: 600px; padding: 25px; position: relative;">
+            <!-- Confetti Animado de Celebración -->
+            <div class="confetti-container">
+                <div class="confetti" style="left: 5%; background: #f59e0b; animation-delay: 0s; width: 8px; height: 16px; border-radius: 2px;"></div>
+                <div class="confetti" style="left: 15%; background: #10b981; animation-delay: 1.5s; width: 10px; height: 10px;"></div>
+                <div class="confetti" style="left: 25%; background: #3b82f6; animation-delay: 0.5s; width: 6px; height: 12px; border-radius: 3px;"></div>
+                <div class="confetti" style="left: 35%; background: #8b5cf6; animation-delay: 2.5s; width: 8px; height: 8px;"></div>
+                <div class="confetti" style="left: 45%; background: #ef4444; animation-delay: 1s; width: 10px; height: 15px; border-radius: 1px;"></div>
+                <div class="confetti" style="left: 55%; background: #06b6d4; animation-delay: 3s; width: 12px; height: 6px;"></div>
+                <div class="confetti" style="left: 65%; background: #ec4899; animation-delay: 0.2s; width: 7px; height: 14px; border-radius: 2px;"></div>
+                <div class="confetti" style="left: 75%; background: #10b981; animation-delay: 1.8s; width: 9px; height: 9px;"></div>
+                <div class="confetti" style="left: 85%; background: #f59e0b; animation-delay: 0.8s; width: 8px; height: 12px; border-radius: 4px;"></div>
+                <div class="confetti" style="left: 95%; background: #3b82f6; animation-delay: 2.2s; width: 10px; height: 10px;"></div>
+            </div>
             <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #f1f5f9; padding-bottom: 15px; margin-bottom: 20px;">
                 <h3 style="font-weight: 700; color: #0f172a; margin: 0; font-size: 18px; display: flex; align-items: center; gap: 8px;">
                     <span>🎉</span> Próximos Cumpleaños

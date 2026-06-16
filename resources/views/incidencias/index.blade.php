@@ -145,8 +145,15 @@
             </tr>
         @empty
             <tr id="empty-state-row">
-                <td colspan="6" style="text-align: center; color: #94a3b8; padding: 30px;">
-                    No se encontraron incidencias registradas.
+                <td colspan="6" style="text-align: center; padding: 40px; color: #94a3b8;">
+                    <div style="display: flex; flex-direction: column; align-items: center; gap: 12px;">
+                        <svg class="floating-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="width: 48px; height: 48px; color: #cbd5e1;">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                            <line x1="9" y1="15" x2="15" y2="15"></line>
+                        </svg>
+                        <span>No se encontraron incidencias registradas.</span>
+                    </div>
                 </td>
             </tr>
         @endforelse
@@ -202,8 +209,15 @@
                         emptyRow = document.createElement('tr');
                         emptyRow.id = 'no-results-row';
                         emptyRow.innerHTML = `
-                            <td colspan="6" style="text-align: center; color: #94a3b8; padding: 30px;">
-                                No se encontraron incidencias registradas con los filtros seleccionados.
+                            <td colspan="6" style="text-align: center; padding: 40px; color: #94a3b8;">
+                                <div style="display: flex; flex-direction: column; align-items: center; gap: 12px;">
+                                    <svg class="floating-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="width: 48px; height: 48px; color: #cbd5e1;">
+                                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                        <polyline points="14 2 14 8 20 8"></polyline>
+                                        <line x1="9" y1="15" x2="15" y2="15"></line>
+                                    </svg>
+                                    <span>No se encontraron incidencias registradas con los filtros seleccionados.</span>
+                                </div>
                             </td>
                         `;
                         tbody.appendChild(emptyRow);

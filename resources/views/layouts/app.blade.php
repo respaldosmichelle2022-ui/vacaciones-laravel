@@ -1005,6 +1005,56 @@
             margin-top: 0 !important;
             border: none !important;
         }
+
+        /* Premium CSS Animations */
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        @keyframes stroke-check {
+            100% { stroke-dashoffset: 0; }
+        }
+
+        @keyframes scale-check {
+            0%, 100% { transform: none; }
+            50% { transform: scale3d(1.1, 1.1, 1); }
+        }
+
+        .floating-icon {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        /* Confetti for Birthday Modal */
+        .confetti-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            pointer-events: none;
+            border-radius: 16px;
+            z-index: 10;
+        }
+        .confetti {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            top: -10px;
+            border-radius: 50%;
+            opacity: 0.8;
+            animation: fall-confetti 3.5s linear infinite;
+        }
+        @keyframes fall-confetti {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(500px) rotate(360deg); opacity: 0; }
+        }
     </style>
 </head>
 
@@ -1301,8 +1351,12 @@
         </div>
 
         @if(session('success'))
-            <div class="alerta-success">
-                {{ session('success') }}
+            <div class="alerta-success" style="display: flex; align-items: center; gap: 10px;">
+                <svg class="checkmark-icon" viewBox="0 0 52 52" style="width: 20px; height: 20px; border-radius: 50%; display: block; stroke-width: 3; stroke: #065f46; stroke-miterlimit: 10; animation: scale-check 0.3s ease-in-out both; flex-shrink: 0;">
+                    <circle cx="26" cy="26" r="25" fill="none" style="stroke-dasharray: 166; stroke-dashoffset: 166; stroke-width: 3; stroke-miterlimit: 10; stroke: #a7f3d0; fill: none; animation: stroke-check 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;"/>
+                    <path fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8" style="transform-origin: 50% 50%; stroke-dasharray: 48; stroke-dashoffset: 48; animation: stroke-check 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.5s forwards;"/>
+                </svg>
+                <span>{{ session('success') }}</span>
             </div>
         @endif
 
@@ -1527,6 +1581,32 @@
                         .catch(err => console.error('Error al registrar Service Worker:', err));
                 });
             }
+
+            // 7. Animación de "Cargando..." al enviar formularios
+            document.addEventListener('submit', function(e) {
+                if (e.target.action && (e.target.action.includes('exportar') || e.target.action.includes('backup'))) {
+                    return;
+                }
+                
+                const submitBtn = e.target.querySelector('button[type="submit"], input[type="submit"]');
+                if (submitBtn) {
+                    if (submitBtn.classList.contains('is-loading')) {
+                        e.preventDefault();
+                        return;
+                    }
+                    submitBtn.classList.add('is-loading');
+                    submitBtn.dataset.originalText = submitBtn.innerHTML;
+                    submitBtn.innerHTML = `
+                        <svg viewBox="0 0 50 50" style="animation: spin 1s linear infinite; width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 5; stroke-linecap: round; margin-right: 8px; display: inline-block; vertical-align: middle;">
+                            <circle cx="25" cy="25" r="20" stroke-dasharray="80, 200" stroke-dashoffset="0"></circle>
+                        </svg>
+                        Procesando...
+                    `;
+                    setTimeout(() => {
+                        submitBtn.disabled = true;
+                    }, 50);
+                }
+            });
         });
     </script>
 
