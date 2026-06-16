@@ -185,17 +185,39 @@
     }
 
     /* Animation: Retail (Comercio) */
-    @keyframes accessorySwing {
-        0% { transform: rotate(-10deg) translateY(0); }
-        100% { transform: rotate(10deg) translateY(-4px); }
+    @keyframes womanWalk {
+        0%, 100% {
+            transform: translateY(0) rotate(0deg);
+        }
+        25% {
+            transform: translateY(-5px) rotate(1.5deg);
+        }
+        50% {
+            transform: translateY(0) rotate(0deg);
+        }
+        75% {
+            transform: translateY(-5px) rotate(-1.5deg);
+        }
     }
-    @keyframes tagWiggle {
-        0%, 100% { transform: rotate(0deg); }
-        50% { transform: rotate(-20deg); }
+
+    .woman-container {
+        width: 75px;
+        height: 75px;
+        position: relative;
+        overflow: hidden;
+        border-radius: 8px;
+        background: linear-gradient(135deg, #fce7f3 0%, #fbcfe8 100%);
+        display: flex;
+        justify-content: center;
+        align-items: flex-end;
+        flex-shrink: 0;
     }
-    @keyframes sparklesTwinkle {
-        0%, 100% { transform: scale(0.3); opacity: 0.1; }
-        50% { transform: scale(1.4); opacity: 1; }
+
+    .woman-img {
+        height: 95%;
+        object-fit: contain;
+        animation: womanWalk 1.6s ease-in-out infinite;
+        transform-origin: bottom center;
     }
 
     /* Operational Cards Layout */
@@ -369,38 +391,9 @@
 
     <!-- Card 3: Comercial -->
     <div class="operational-card">
-        <svg viewBox="0 0 100 100" style="width: 75px; height: 75px; flex-shrink: 0;">
-            <!-- Clothing rack/Hanger background -->
-            <line x1="10" y1="85" x2="90" y2="85" stroke="#cbd5e1" stroke-width="3" />
-            <line x1="25" y1="85" x2="25" y2="25" stroke="#e2e8f0" stroke-width="2" />
-            <line x1="75" y1="85" x2="75" y2="25" stroke="#e2e8f0" stroke-width="2" />
-            
-            <!-- Twinkling Sparkles (larger & brighter) -->
-            <g style="animation: sparklesTwinkle 1.8s ease-in-out infinite; transform-origin: 30px 25px;">
-                <path d="M30 18 L33 25 L40 28 L33 31 L30 38 L27 31 L20 28 L27 25 Z" fill="#eab308" />
-            </g>
-            <g style="animation: sparklesTwinkle 1.8s ease-in-out infinite 0.9s; transform-origin: 75px 20px;">
-                <path d="M75 12 L77 17 L82 19 L77 21 L75 26 L73 21 L68 19 L73 17 Z" fill="#eab308" />
-            </g>
-            
-            <!-- Hanging/Floating Fashion Accessory (Swinging prominently) -->
-            <g style="animation: accessorySwing 2s ease-in-out infinite alternate; transform-origin: 50px 30px;">
-                <!-- Hanger hook -->
-                <path d="M50 30 C50 22, 58 22, 54 26" fill="none" stroke="#475569" stroke-width="2" />
-                <!-- Luxury Dress / Bag -->
-                <path d="M38 42 L42 34 H58 L62 42 L58 78 H42 Z" fill="#db2777" />
-                <!-- Belt Accent -->
-                <rect x="41" y="52" width="18" height="4" fill="#f59e0b" />
-                <circle cx="50" cy="54" r="3" fill="#ffffff" />
-            </g>
-            
-            <!-- Swinging Sale Tag (Wiggling) -->
-            <g style="animation: tagWiggle 1.5s ease-in-out infinite; transform-origin: 80px 45px;">
-                <line x1="75" y1="40" x2="80" y2="45" stroke="#64748b" stroke-width="1.5" />
-                <polygon points="80,45 92,39 96,49 84,55" fill="#ef4444" />
-                <circle cx="83" cy="48" r="1.5" fill="#ffffff" />
-            </g>
-        </svg>
+        <div class="woman-container">
+            <img src="{{ asset('images/mujer_ventas.png') }}" class="woman-img" alt="Comercio y Ventas">
+        </div>
         <div class="operational-card-text">
             <h4>Comercio y Ventas</h4>
             <p>Exhibición de accesorios y calzado, atención directa y ventas.</p>
