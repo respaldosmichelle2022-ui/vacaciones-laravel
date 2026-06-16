@@ -155,30 +155,47 @@
     }
 
     /* Animation: Warehouse (Almacen) */
-    @keyframes boxOpenClose {
-        0%, 100% { transform: rotate(0deg) translateY(0); }
-        50% { transform: rotate(-22deg) translateY(-6px); }
+    @keyframes boxLift {
+        0%, 100% { transform: translateY(3px) rotate(0deg); }
+        50% { transform: translateY(-14px) rotate(-4deg); }
+    }
+    @keyframes bodySway {
+        0%, 100% { transform: rotate(0deg) scale(1); }
+        50% { transform: rotate(3deg) scale(1.02); }
     }
 
     /* Animation: Office (Oficina) */
-    @keyframes typing {
-        0% { transform: translateY(0); }
-        100% { transform: translateY(-3px); }
+    @keyframes headBob {
+        0%, 100% { transform: translateY(0) rotate(0deg); }
+        50% { transform: translateY(-4px) rotate(4deg); }
     }
-    @keyframes steam-rise {
-        0% { stroke-dasharray: 0, 20; stroke-dashoffset: 0; opacity: 0; transform: translateY(0); }
-        50% { opacity: 0.6; }
-        100% { stroke-dasharray: 20, 20; stroke-dashoffset: -20; opacity: 0; transform: translateY(-8px); }
+    @keyframes typingFast {
+        0% { transform: translateY(0); }
+        50% { transform: translateY(-5px); }
+        100% { transform: translateY(2px); }
+    }
+    @keyframes chartScroll {
+        0% { stroke-dashoffset: 30; }
+        100% { stroke-dashoffset: 0; }
+    }
+    @keyframes steamPremium {
+        0% { transform: translateY(0) scale(0.7); opacity: 0; }
+        40% { opacity: 0.8; }
+        100% { transform: translateY(-18px) scale(1.4); opacity: 0; }
     }
 
     /* Animation: Retail (Comercio) */
-    @keyframes accessoryFloat {
-        0% { transform: translateY(0); }
-        100% { transform: translateY(-5px); }
+    @keyframes accessorySwing {
+        0% { transform: rotate(-10deg) translateY(0); }
+        100% { transform: rotate(10deg) translateY(-4px); }
     }
-    @keyframes sparkle-twinkle {
-        0%, 100% { opacity: 0.2; transform: scale(0.8); }
-        50% { opacity: 1; transform: scale(1.2); }
+    @keyframes tagWiggle {
+        0%, 100% { transform: rotate(0deg); }
+        50% { transform: rotate(-20deg); }
+    }
+    @keyframes sparklesTwinkle {
+        0%, 100% { transform: scale(0.3); opacity: 0.1; }
+        50% { transform: scale(1.4); opacity: 1; }
     }
 
     /* Operational Cards Layout */
@@ -272,12 +289,34 @@
 <div class="operational-panel no-print">
     <!-- Card 1: Almacén -->
     <div class="operational-card">
-        <svg viewBox="0 0 100 100" style="width: 65px; height: 65px; flex-shrink: 0;">
-            <circle cx="50" cy="35" r="14" fill="#94a3b8" />
-            <path d="M32 58 C32 44, 68 44, 68 58 Z" fill="#94a3b8" />
-            <rect x="30" y="62" width="40" height="26" fill="#d97706" rx="2" />
-            <g style="transform-origin: 30px 62px; animation: boxOpenClose 2.5s ease-in-out infinite;">
-                <rect x="26" y="55" width="48" height="8" fill="#b45309" rx="1" />
+        <svg viewBox="0 0 100 100" style="width: 75px; height: 75px; flex-shrink: 0;">
+            <!-- Background Warehouse Shelves -->
+            <rect x="5" y="15" width="22" height="70" fill="#e2e8f0" rx="1" />
+            <line x1="5" y1="35" x2="27" y2="35" stroke="#cbd5e1" stroke-width="2" />
+            <line x1="5" y1="60" x2="27" y2="60" stroke="#cbd5e1" stroke-width="2" />
+            <rect x="8" y="22" width="16" height="12" fill="#d97706" rx="1" opacity="0.7" />
+            <rect x="8" y="47" width="16" height="12" fill="#f59e0b" rx="1" opacity="0.7" />
+            
+            <!-- Worker Character -->
+            <g style="animation: bodySway 2.5s ease-in-out infinite;">
+                <!-- Helmet & Head -->
+                <circle cx="55" cy="36" r="10" fill="#f59e0b" />
+                <rect x="48" y="24" width="14" height="5" fill="#eab308" rx="2" />
+                <path d="M47 38 C47 38, 55 42, 63 38" fill="none" stroke="#475569" stroke-width="2" />
+                <!-- Torso -->
+                <path d="M40 50 C40 45, 70 45, 70 50 L68 85 H42 Z" fill="#2563eb" />
+            </g>
+            
+            <!-- Lifting Box (Lifting up and down significantly) -->
+            <g style="animation: boxLift 2s ease-in-out infinite; transform-origin: center;">
+                <!-- Arms holding box -->
+                <path d="M44 58 L32 68 L42 78" fill="none" stroke="#f59e0b" stroke-width="3.5" stroke-linecap="round" />
+                <path d="M66 58 L78 68 L68 78" fill="none" stroke="#f59e0b" stroke-width="3.5" stroke-linecap="round" />
+                <!-- Cardboard Box -->
+                <rect x="34" y="65" width="32" height="22" fill="#b45309" rx="2" />
+                <line x1="34" y1="76" x2="66" y2="76" stroke="#92400e" stroke-width="2" />
+                <!-- Tape accent -->
+                <rect x="46" y="65" width="8" height="22" fill="#ef4444" opacity="0.8" />
             </g>
         </svg>
         <div class="operational-card-text">
@@ -288,16 +327,39 @@
 
     <!-- Card 2: Oficina -->
     <div class="operational-card">
-        <svg viewBox="0 0 100 100" style="width: 65px; height: 65px; flex-shrink: 0;">
-            <circle cx="45" cy="38" r="12" fill="#3b82f6" />
-            <path d="M25 63 C25 48, 65 48, 65 63 Z" fill="#3b82f6" />
-            <rect x="62" y="38" width="4" height="22" fill="#64748b" rx="1" style="transform: skewY(-10deg);" />
-            <rect x="52" y="52" width="16" height="3" fill="#475569" />
-            <circle cx="49" cy="54" r="2.5" fill="#cbd5e1" style="animation: typing 0.4s ease-in-out infinite alternate;" />
-            <circle cx="53" cy="53" r="2.5" fill="#cbd5e1" style="animation: typing 0.4s ease-in-out infinite alternate-reverse;" />
-            <rect x="18" y="56" width="8" height="10" fill="#ef4444" rx="1" />
-            <path d="M26 58 H29 V62 H26" fill="none" stroke="#ef4444" stroke-width="1.5" />
-            <path d="M20 52 Q18 48 20 44 T20 36" fill="none" stroke="#94a3b8" stroke-width="1.5" stroke-linecap="round" style="animation: steam-rise 2s ease-in-out infinite;" />
+        <svg viewBox="0 0 100 100" style="width: 75px; height: 75px; flex-shrink: 0;">
+            <!-- Desk and Lamp -->
+            <rect x="10" y="70" width="80" height="6" fill="#475569" rx="1" />
+            <line x1="20" y1="76" x2="20" y2="90" stroke="#475569" stroke-width="4" />
+            <line x1="80" y1="76" x2="80" y2="90" stroke="#475569" stroke-width="4" />
+            
+            <!-- Desk Lamp (Yellow light cone casting down) -->
+            <path d="M15 70 L5 45 H20 Z" fill="#fef08a" opacity="0.3" />
+            <path d="M12 40 L18 45" stroke="#ef4444" stroke-width="3" />
+            <path d="M15 45 L15 70" stroke="#64748b" stroke-width="2" />
+            
+            <!-- Office Worker -->
+            <!-- Torso -->
+            <path d="M38 64 C38 52, 68 52, 68 64 L65 70 H41 Z" fill="#0d9488" />
+            <!-- Head bobbing -->
+            <g style="animation: headBob 2s ease-in-out infinite;">
+                <circle cx="53" cy="46" r="10" fill="#f59e0b" />
+                <path d="M48 44 C50 40, 56 40, 58 44" fill="none" stroke="#1e293b" stroke-width="1.5" />
+            </g>
+            
+            <!-- Laptop Screen and Keyboard -->
+            <rect x="68" y="44" width="22" height="26" fill="#1e293b" rx="2" />
+            <!-- Animated Screen Chart -->
+            <path d="M72 62 L78 54 L82 58 L88 48" fill="none" stroke="#10b981" stroke-width="2" stroke-dasharray="30" stroke-dashoffset="30" style="animation: chartScroll 1.5s linear infinite;" />
+            <rect x="65" y="68" width="26" height="3" fill="#cbd5e1" />
+            
+            <!-- Typing hands (moving fast) -->
+            <circle cx="61" cy="65" r="3" fill="#f59e0b" style="animation: typingFast 0.3s ease-in-out infinite alternate;" />
+            <circle cx="65" cy="64" r="3" fill="#f59e0b" style="animation: typingFast 0.3s ease-in-out infinite alternate-reverse;" />
+            
+            <!-- Coffee mug with steam -->
+            <rect x="30" y="62" width="6" height="8" fill="#ef4444" rx="1" />
+            <path d="M32 52 C30 48, 34 46, 32 42" fill="none" stroke="#94a3b8" stroke-width="1.5" stroke-linecap="round" style="animation: steamPremium 1.8s ease-in-out infinite;" />
         </svg>
         <div class="operational-card-text">
             <h4>Administración y Oficina</h4>
@@ -307,18 +369,36 @@
 
     <!-- Card 3: Comercial -->
     <div class="operational-card">
-        <svg viewBox="0 0 100 100" style="width: 65px; height: 65px; flex-shrink: 0;">
-            <circle cx="50" cy="35" r="12" fill="#ec4899" />
-            <path d="M34 60 C34 46, 66 46, 66 60 Z" fill="#ec4899" />
-            <g style="animation: accessoryFloat 2s ease-in-out infinite alternate; transform-origin: center;">
-                <path d="M42 60 H58 V74 H42 Z" fill="#f59e0b" rx="2" />
-                <path d="M46 60 C46 52, 54 52, 54 60" fill="none" stroke="#d97706" stroke-width="1.8" />
+        <svg viewBox="0 0 100 100" style="width: 75px; height: 75px; flex-shrink: 0;">
+            <!-- Clothing rack/Hanger background -->
+            <line x1="10" y1="85" x2="90" y2="85" stroke="#cbd5e1" stroke-width="3" />
+            <line x1="25" y1="85" x2="25" y2="25" stroke="#e2e8f0" stroke-width="2" />
+            <line x1="75" y1="85" x2="75" y2="25" stroke="#e2e8f0" stroke-width="2" />
+            
+            <!-- Twinkling Sparkles (larger & brighter) -->
+            <g style="animation: sparklesTwinkle 1.8s ease-in-out infinite; transform-origin: 30px 25px;">
+                <path d="M30 18 L33 25 L40 28 L33 31 L30 38 L27 31 L20 28 L27 25 Z" fill="#eab308" />
             </g>
-            <g style="animation: sparkle-twinkle 1.5s ease-in-out infinite; transform-origin: 25px 25px;">
-                <path d="M25 23 L27 25 L25 27 L23 25 Z" fill="#fbbf24" />
+            <g style="animation: sparklesTwinkle 1.8s ease-in-out infinite 0.9s; transform-origin: 75px 20px;">
+                <path d="M75 12 L77 17 L82 19 L77 21 L75 26 L73 21 L68 19 L73 17 Z" fill="#eab308" />
             </g>
-            <g style="animation: sparkle-twinkle 1.5s ease-in-out infinite 0.7s; transform-origin: 75px 30px;">
-                <path d="M75 28 L77 30 L75 32 L73 30 Z" fill="#fbbf24" />
+            
+            <!-- Hanging/Floating Fashion Accessory (Swinging prominently) -->
+            <g style="animation: accessorySwing 2s ease-in-out infinite alternate; transform-origin: 50px 30px;">
+                <!-- Hanger hook -->
+                <path d="M50 30 C50 22, 58 22, 54 26" fill="none" stroke="#475569" stroke-width="2" />
+                <!-- Luxury Dress / Bag -->
+                <path d="M38 42 L42 34 H58 L62 42 L58 78 H42 Z" fill="#db2777" />
+                <!-- Belt Accent -->
+                <rect x="41" y="52" width="18" height="4" fill="#f59e0b" />
+                <circle cx="50" cy="54" r="3" fill="#ffffff" />
+            </g>
+            
+            <!-- Swinging Sale Tag (Wiggling) -->
+            <g style="animation: tagWiggle 1.5s ease-in-out infinite; transform-origin: 80px 45px;">
+                <line x1="75" y1="40" x2="80" y2="45" stroke="#64748b" stroke-width="1.5" />
+                <polygon points="80,45 92,39 96,49 84,55" fill="#ef4444" />
+                <circle cx="83" cy="48" r="1.5" fill="#ffffff" />
             </g>
         </svg>
         <div class="operational-card-text">
